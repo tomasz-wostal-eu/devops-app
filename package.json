@@ -1,0 +1,13 @@
+{
+    "name": "devops-app",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "@semantic-release/changelog": "^6.0.2",
+        "@semantic-release/commit-analyzer": "^9.0.2",
+        "@semantic-release/exec": "^6.0.3",
+        "@semantic-release/git": "^10.0.0",
+        "@semantic-release/release-notes-generator": "^10.0.3",
+        "semantic-release": "^24.1.2"
+    }
+}
