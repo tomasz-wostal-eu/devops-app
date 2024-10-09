@@ -1,3 +1,10 @@
+# [0.2.0-alpha.1](https://github.com/devops-toys/devops-app/compare/v0.1.0...v0.2.0-alpha.1) (2024-10-09)
+
+
+### Features
+
+* DT-3 DT-4 DT-5: Deploy basic ArgoCD #comment Deployed. ([21ec850](https://github.com/devops-toys/devops-app/commit/21ec8505563b61ae260d56de8ac2857ea2b4bf64))
+
 # [0.1.0](https://github.com/devops-toys/devops-app/compare/v0.0.0...v0.1.0) (2024-10-09)
 
 
