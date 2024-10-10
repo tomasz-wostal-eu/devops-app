@@ -31,6 +31,7 @@ argo-cd-bootstrap:
 
 # Add devops-toys repo to argocd
 add-devops-app-repo:
+	@echo "Adding 'devops-app' repo to argocd ..."
 	kubectl --namespace argocd \
 	create secret \
 		generic repo-devops-app \
@@ -59,6 +60,17 @@ sealed-secrets:
 	@echo "Installing Sealed Secrets ..."
 	@kubectl apply -f ./applicationsets/sealed-secrets.yaml
 	@sleep 60
+	
+# Push Secrets
+push-secrets:
+	@echo "Pushing secrets ..."
+	git add manifests
+	git commit -m "[skip ci] Update secrets"
+	git push
+
+bootstrap-all:
+	@echo "Installing Sealed Secrets ..."
+	kubectl apply -f ./bootstrap-all.yaml
 
 # Run everything
 all: 
@@ -67,6 +79,8 @@ all:
 	$(MAKE) prometheus-operarator-cdrs
 	$(MAKE) sealed-secrets
 	$(MAKE) add-devops-app-repo
+	$(MAKE) push-secrets
+	$(MAKE) bootstrap-all
 
 # Teardown 
 destroy:
