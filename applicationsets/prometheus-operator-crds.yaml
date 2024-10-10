@@ -29,7 +29,7 @@ spec:
             releaseName: prometheus-operator-crds
             valueFiles:
               - $values/values/{{cluster}}/prometheus-operator-crds/values.yaml
-        - repoURL: https://github.com/devops-toys/devops-toys.git
+        - repoURL: git@github.com:devops-toys/devops-app.git
           targetRevision: '{{revision}}'
           ref: values
       syncPolicy:
