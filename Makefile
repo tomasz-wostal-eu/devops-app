@@ -30,8 +30,14 @@ prometheus-operarator-cdrs:
 	@kubectl apply -f ./applicationsets/prometheus-operator-crds.yaml
 	@sleep 10
 
+# Install Sealed Secrets
+sealed-secrets:
+	@echo "Installing Sealed Secrets ..."
+	@kubectl apply -f ./applicationsets/sealed-secrets.yaml
+	@sleep 60
+
 # Run everything
-all: cluster initial-argocd-setup
+all: cluster initial-argocd-setup prometheus-operarator-cdrs sealed-secrets
 
 # Teardown 
 destroy:

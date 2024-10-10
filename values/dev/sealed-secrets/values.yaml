@@ -1,0 +1,6 @@
+nameOverride: sealed-secrets
+fullnameOverride: sealed-secrets
+
+metrics:
+  serviceMonitor:
+    enabled: true
