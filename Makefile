@@ -124,7 +124,7 @@ cloudflare-tunnel-credentials-secret:
 		echo "Namespace cloudflare has been created."; \
 	fi
 	@echo "Creating cloudflare tunnel credentials secret ..."
-	@kubectl --namespace cloudflare \
+	kubectl --namespace cloudflare \
 		create secret \
 		generic tunnel-credentials \
 			--from-file=credentials.json=$(HOME)/.cloudflared/$(CLOUDFLARE_TUNNEL_ID).json \
@@ -181,6 +181,108 @@ external-dns-cloudflare-secret:
 		tee ./manifests/dev/external-dns/secret-cloudflare-api-key.yaml > /dev/null
 
 external-dns: external-dns-cloudflare-secret
+
+# Create argocd google oauth client secret
+argocd-oauth-client-secret:
+	@if kubectl get namespace argocd >/dev/null 2>&1; then \
+		echo "Namespace argocd already exists."; \
+	else \
+		echo "Namespace argocd does not exist. Creating..."; \
+		kubectl create namespace argocd; \
+		echo "Namespace argocd has been created."; \
+	fi
+	echo "Creating argocd oauth client secret ..."
+	@kubectl --namespace argocd \
+		create secret \
+		generic argocd-google-oauth-client \
+			--from-literal=client_id=$(GOOGLE_CLIENT_ID) \
+			--from-literal=client_secret=$(GOOGLE_CLIENT_SECRET) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		kubectl patch -f - \
+			-p '{"spec": {"template": {"metadata": {"labels": {"app.kubernetes.io/part-of":"argocd"}}}}}' \
+			--type=merge \
+			--local -o yaml > ./manifests/dev/argo-cd/secret-argocd-google-oauth-client.yaml
+
+# Create argocd google domain wide sa json secret
+argocd-google-sa:
+	@if kubectl get namespace argocd >/dev/null 2>&1; then \
+		echo "Namespace argocd already exists."; \
+	else \
+		echo "Namespace argocd does not exist. Creating..."; \
+		kubectl create namespace argocd; \
+		echo "Namespace argocd has been created."; \
+	fi
+	echo "Creating argocd google domain wide sa json secret ..."
+	@kubectl --namespace argocd \
+		create secret \
+		generic argocd-google-domain-wide-sa-json \
+			--from-file=googleAuth.json=devopslaboratory-f90072620e7c.json \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets -oyaml - | \
+		kubectl patch -f - \
+			-p '{"spec": {"template": {"metadata": {"labels": {"app.kubernetes.io/part-of":"argocd"}}}}}' \
+			--dry-run=client \
+			--type=merge \
+			--local -oyaml > ./manifests/dev/argo-cd/secret-argocd-google-sa.yaml
+
+# Create argocd argo-workflows sso secret
+argocd-argo-workflows-sso:
+	@if kubectl get namespace argocd >/dev/null 2>&1; then \
+		echo "Namespace argocd already exists."; \
+	else \
+		echo "Namespace argocd does not exist. Creating..."; \
+		kubectl create namespace argocd; \
+		echo "Namespace argocd has been created."; \
+	fi
+	echo "Creating argocd argo-workflows sso secret ..."
+	@kubectl --namespace argocd \
+		create secret \
+		generic argo-workflows-sso \
+			--from-literal=client-id=$(ARGO_WORKFLOWS_CLIENT_ID) \
+			--from-literal=client-secret=$(ARGO_WORKFLOWS_CLIENT_SECRET) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		kubectl patch -f - \
+			-p '{"spec": {"template": {"metadata": {"labels": {"app.kubernetes.io/part-of":"argocd"}}}}}' \
+			--type=merge \
+			--local -oyaml > ./manifests/dev/argo-cd/secret-argo-workflows-sso.yaml
+
+# Create argocd notifications secret
+argocd-notifications-secret:
+	@if kubectl get namespace argocd >/dev/null 2>&1; then \
+		echo "Namespace argocd already exists."; \
+	else \
+		echo "Namespace argocd does not exist. Creating..."; \
+		kubectl create namespace argocd; \
+		echo "Namespace argocd has been created."; \
+	fi
+	echo "Creating argocd notifications secret ..."
+	@kubectl --namespace argocd \
+		create secret \
+			generic argocd-notifications-secret \
+				--from-file=github-privateKey=devops-toys.2024-10-04.private-key.pem \
+				--output json \
+				--dry-run=client | \
+			kubeseal --format yaml \
+				--controller-name=sealed-secrets \
+				--controller-namespace=sealed-secrets -oyaml - | \
+			kubectl patch -f - \
+				-p '{"spec": {"template": {"metadata": {"labels": {"app.kubernetes.io/part-of":"argocd"}}}}}' \
+				--dry-run=client \
+				--type=merge \
+				--local -oyaml > ./manifests/dev/argo-cd/secret-argocd-notifications.yaml
+
+argo-cd: argocd-oauth-client-secret argocd-google-sa argocd-argo-workflows-sso argocd-notifications-secret
 	
 # Push Secrets
 push-secrets:
@@ -204,6 +306,7 @@ all:
 	$(MAKE) cloudflare
 	$(MAKE) external-dns
 	$(MAKE) push-secrets
+	$(MAKE) argocd
 	$(MAKE) bootstrap-app
 
 # Teardown 
