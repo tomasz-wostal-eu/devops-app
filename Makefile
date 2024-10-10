@@ -70,7 +70,7 @@ push-secrets:
 
 bootstrap-all:
 	@echo "Installing Sealed Secrets ..."
-	kubectl apply -f ./bootstrap-all.yaml
+	kubectl apply -f ./bootstrap-app.yaml
 
 # Run everything
 all: 
