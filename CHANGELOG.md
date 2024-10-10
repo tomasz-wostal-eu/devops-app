@@ -1,3 +1,10 @@
+# [0.2.0-alpha.2](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.1...v0.2.0-alpha.2) (2024-10-10)
+
+
+### Features
+
+* DT-5: Deploy Sealed Secrets #comment Deployed. ([1055601](https://github.com/devops-toys/devops-app/commit/10556016d44ef37dc63a7fdf50b288f810aa8299))
+
 # [0.2.0-alpha.1](https://github.com/devops-toys/devops-app/compare/v0.1.0...v0.2.0-alpha.1) (2024-10-09)
 
 
