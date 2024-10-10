@@ -60,6 +60,50 @@ sealed-secrets:
 	@echo "Installing Sealed Secrets ..."
 	@kubectl apply -f ./applicationsets/sealed-secrets.yaml
 	@sleep 60
+
+# Create Certificate Authority
+cert-manager-ca:
+	@if kubectl get namespace cert-manager >/dev/null 2>&1; then \
+		echo "Namespace cert-manager already exists."; \
+	else \
+		echo "Namespace cert-manager does not exist. Creating..."; \
+		kubectl create namespace cert-manager; \
+		echo "Namespace cert-manager has been created."; \
+	fi
+	@echo "Creating Certificate Authority (CA)"
+	openssl genrsa -out ca.key 4096
+	openssl req -new -x509 -sha256 -days 3650 \
+		-key ca.key \
+		-out ca.crt \
+		-subj '/CN=$(CN)/emailAddress=$(CERT_EMAIL)/C=$(C)/ST=$(ST)/L=$(L)/O=$(O)/OU=$(OU)'
+
+# Create cert-manager secrets
+cert-manager-secret:
+	@if kubectl get namespace cert-manager >/dev/null 2>&1; then \
+		echo "Namespace cert-manager already exists."; \
+	else \
+		echo "Namespace cert-manager does not exist. Creating..."; \
+		kubectl create namespace cert-manager; \
+		echo "Namespace cert-manager has been created."; \
+	fi
+	@echo "Creating secrets for Cert Manager..."
+	@kubectl --namespace cert-manager \
+		create secret \
+		generic devopslabolatory-org-ca \
+			--from-file=tls.key=ca.key \
+			--from-file=tls.crt=ca.crt \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets -oyaml - | \
+		kubectl patch -f - \
+			-p '{"spec": {"template": {"metadata": {"annotations": {"argocd.argoproj.io/sync-wave":"0"}}}}}' \
+			--dry-run=client \
+			--type=merge \
+			--local -oyaml > ./manifests/dev/cert-manager/secret-ca.yaml
+
+cert-manager: cert-manager-ca cert-manager-secret
 	
 # Push Secrets
 push-secrets:
@@ -68,7 +112,7 @@ push-secrets:
 	git commit -m "[skip ci] Update secrets"
 	git push
 
-bootstrap-all:
+bootstrap-app:
 	@echo "Installing Sealed Secrets ..."
 	kubectl apply -f ./bootstrap-app.yaml
 
@@ -79,8 +123,9 @@ all:
 	$(MAKE) prometheus-operarator-cdrs
 	$(MAKE) sealed-secrets
 	$(MAKE) add-devops-app-repo
+	$(MAKE) cert-manager
 	$(MAKE) push-secrets
-	$(MAKE) bootstrap-all
+	$(MAKE) bootstrap-app
 
 # Teardown 
 destroy:

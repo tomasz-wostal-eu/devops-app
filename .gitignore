@@ -4,3 +4,5 @@ package-lock.json
 .DS_Store
 ssh-key-devops-app
 ssh-key-devops-app.pub
+ca.crt
+ca.key
