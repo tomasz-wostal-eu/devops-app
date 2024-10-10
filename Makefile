@@ -305,8 +305,8 @@ all:
 	$(MAKE) cert-manager
 	$(MAKE) cloudflare
 	$(MAKE) external-dns
-	$(MAKE) push-secrets
 	$(MAKE) argo-cd
+	$(MAKE) push-secrets
 	$(MAKE) bootstrap-app
 
 # Teardown 
