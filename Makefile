@@ -158,6 +158,29 @@ cloudflare-api-key-secret:
 		tee ./manifests/dev/cloudflare-tunnel/secret-api-key.yaml > /dev/null
 
 cloudflare: cloudflare-tunnel cloudflare-tunnel-credentials-secret cloudflare-api-key-secret
+
+external-dns-cloudflare-secret:
+	@if kubectl get namespace external-dns >/dev/null 2>&1; then \
+		echo "Namespace external-dns already exists."; \
+	else \
+		echo "Namespace external-dns does not exist. Creating..."; \
+		kubectl create namespace external-dns; \
+		echo "Namespace external-dns has been created."; \
+	fi
+	echo "Creating external-dns cloudflare api key credentials secret ..."
+	@kubectl --namespace external-dns \
+		create secret \
+		generic cloudflare-api-key \
+			--from-literal=cloudflare_api_key=$(CLOUDFLARE_API_KEY) \
+			--from-literal=email=$(CLOUDFLARE_EMAIL) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/external-dns/secret-cloudflare-api-key.yaml > /dev/null
+
+external-dns: external-dns-cloudflare-secret
 	
 # Push Secrets
 push-secrets:
@@ -179,6 +202,7 @@ all:
 	$(MAKE) add-devops-app-repo
 	$(MAKE) cert-manager
 	$(MAKE) cloudflare
+	$(MAKE) external-dns
 	$(MAKE) push-secrets
 	$(MAKE) bootstrap-app
 
