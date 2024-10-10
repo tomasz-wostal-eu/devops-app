@@ -306,7 +306,7 @@ all:
 	$(MAKE) cloudflare
 	$(MAKE) external-dns
 	$(MAKE) push-secrets
-	$(MAKE) argocd
+	$(MAKE) argo-cd
 	$(MAKE) bootstrap-app
 
 # Teardown 
