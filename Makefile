@@ -71,8 +71,8 @@ cert-manager-ca:
 		echo "Namespace cert-manager has been created."; \
 	fi
 	@echo "Creating Certificate Authority (CA)"
-	openssl genrsa -out ca.key 4096
-	openssl req -new -x509 -sha256 -days 3650 \
+	@openssl genrsa -out ca.key 4096
+	@openssl req -new -x509 -sha256 -days 3650 \
 		-key ca.key \
 		-out ca.crt \
 		-subj '/CN=$(CN)/emailAddress=$(CERT_EMAIL)/C=$(C)/ST=$(ST)/L=$(L)/O=$(O)/OU=$(OU)'
@@ -104,17 +104,71 @@ cert-manager-secret:
 			--local -oyaml > ./manifests/dev/cert-manager/secret-ca.yaml
 
 cert-manager: cert-manager-ca cert-manager-secret
+
+cloudflare-tunnel:
+	@if [ ! -f ~/.cloudflared/cert.pem ]; then \
+		echo "The cert.pem file does not exist. Running cloudflared tunnel login ..."; \
+		cloudflared tunnel login; \
+		cloudflared tunnel create devopslabolatory; \
+	else \
+		echo "The cert.pem file already exists."; \
+	fi
+
+# Create cloudflare tunnel credentials
+cloudflare-tunnel-credentials-secret:
+	@if kubectl get namespace cloudflare >/dev/null 2>&1; then \
+		echo "Namespace cloudflare already exists."; \
+	else \
+		echo "Namespace cloudflare does not exist. Creating..."; \
+		kubectl create namespace cloudflare; \
+		echo "Namespace cloudflare has been created."; \
+	fi
+	@echo "Creating cloudflare tunnel credentials secret ..."
+	@kubectl --namespace cloudflare \
+		create secret \
+		generic tunnel-credentials \
+			--from-file=credentials.json=$(HOME)/.cloudflared/$(CLOUDFLARE_TUNNEL_ID).json \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/cloudflare-tunnel/secret-tunnel-credentials.yaml > /dev/null
+
+# Create cloudflare api key secret
+cloudflare-api-key-secret:
+	@if kubectl get namespace cloudflare >/dev/null 2>&1; then \
+		echo "Namespace cloudflare already exists."; \
+	else \
+		echo "Namespace cloudflare does not exist. Creating..."; \
+		kubectl create namespace cloudflare; \
+		echo "Namespace cloudflare has been created."; \
+	fi
+	@echo "Creating cloudflare api key secret ..."
+	@kubectl --namespace cloudflare \
+		create secret \
+		generic cloudflare-api-key \
+			--from-literal=apiKey=$(CLOUDFLARE_API_KEY) \
+			--from-literal=email=$(CLOUDFLARE_EMAIL) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/cloudflare-tunnel/secret-api-key.yaml > /dev/null
+
+cloudflare: cloudflare-tunnel cloudflare-tunnel-credentials-secret cloudflare-api-key-secret
 	
 # Push Secrets
 push-secrets:
 	@echo "Pushing secrets ..."
-	git add manifests
-	git commit -m "[skip ci] Update secrets"
-	git push
+	@git add manifests
+	@git commit -m "[skip ci] Update secrets"
+	@git push
 
 bootstrap-app:
 	@echo "Installing Sealed Secrets ..."
-	kubectl apply -f ./bootstrap-app.yaml
+	@kubectl apply -f ./bootstrap-app.yaml
 
 # Run everything
 all: 
@@ -124,6 +178,7 @@ all:
 	$(MAKE) sealed-secrets
 	$(MAKE) add-devops-app-repo
 	$(MAKE) cert-manager
+	$(MAKE) cloudflare
 	$(MAKE) push-secrets
 	$(MAKE) bootstrap-app
 
