@@ -338,7 +338,7 @@ argo-workflows-devops-toys-ssh-key:
 		echo "Namespace argo has been created."; \
 	fi
 	@echo "Creating argo devops-toys ssh key secret ..."
-	kubectl --namespace argocd \
+	kubectl --namespace argo \
 	create secret \
 		generic repo-devops-app \
 			--from-literal=url=git@github.com:$(GITHUB_ORGANIZATION)/devops-app.git \
