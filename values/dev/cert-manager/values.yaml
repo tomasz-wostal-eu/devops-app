@@ -4,4 +4,4 @@ prometheus:
   servicemonitor:
     enabled: true
   podmonitor:
-    enabled: true
+    enabled: false
