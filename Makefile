@@ -417,6 +417,14 @@ argo-events: argo-events-webhook-secret argo-events-github-token
 
 # Create minio secret for root user
 minio-root:
+	@if kubectl get namespace minio >/dev/null 2>&1; then \
+		echo "Namespace minio already exists."; \
+	else \
+		echo "Namespace minio does not exist. Creating..."; \
+		kubectl create namespace minio; \
+		echo "Namespace minio has been created."; \
+	fi
+	echo "Creating minio root secret ..."
 	kubectl --namespace minio \
 		create secret \
 		generic minio-root \
@@ -431,6 +439,14 @@ minio-root:
 
 # Create minio users
 minio-users:
+	@if kubectl get namespace minio >/dev/null 2>&1; then \
+		echo "Namespace minio already exists."; \
+	else \
+		echo "Namespace minio does not exist. Creating..."; \
+		kubectl create namespace minio; \
+		echo "Namespace minio has been created."; \
+	fi
+	echo "Creating minio users ..."
 	@./scripts/minio_users.sh "${MINIO_USERNAME}" "${MINIO_PASSWORD}"
 
 minio: minio-root minio-users
