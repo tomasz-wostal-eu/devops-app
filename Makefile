@@ -283,6 +283,157 @@ argocd-notifications-secret:
 				--local -oyaml > ./manifests/dev/argo-cd/secret-argocd-notifications.yaml
 
 argo-cd: argocd-oauth-client-secret argocd-google-sa argocd-argo-workflows-sso argocd-notifications-secret
+
+# Create argo argo-workflows sso secret
+argo-workflows-sso-credentials:
+	@if kubectl get namespace argo >/dev/null 2>&1; then \
+		echo "Namespace argo already exists."; \
+	else \
+		echo "Namespace argo does not exist. Creating..."; \
+		kubectl create namespace argo; \
+		echo "Namespace argo has been created."; \
+	fi
+	echo "Creating argo argo-workflows sso secret ..."
+	@kubectl --namespace argo \
+		create secret \
+		generic argo-workflows-sso \
+			--from-literal=client-id=$(ARGO_WORKFLOWS_CLIENT_ID) \
+			--from-literal=client-secret=$(ARGO_WORKFLOWS_CLIENT_SECRET) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/argo-workflows/secret-argo-workflows-sso.yaml > /dev/null
+
+# Create argo git credentials
+argo-workflows-git-credentials:
+	@if kubectl get namespace argo >/dev/null 2>&1; then \
+		echo "Namespace argo already exists."; \
+	else \
+		echo "Namespace argo does not exist. Creating..."; \
+		kubectl create namespace argo; \
+		echo "Namespace argo has been created."; \
+	fi
+	@kubectl --namespace argo \
+		create secret \
+		generic git-credentials \
+			--from-literal=token=$(WOSTAL_GITHUB_TOKEN) \
+			--from-literal=username=$(WOSTAL_GITHUB_USERNAME) \
+			--from-literal=email=$(WOSTAL_GITHUB_EMAIL) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/argo-workflows/secret-git-credentials.yaml > /dev/null
+
+# Create argo devops-toys ssh key
+argo-workflows-devops-toys-ssh-key:
+	@if kubectl get namespace argo >/dev/null 2>&1; then \
+		echo "Namespace argo already exists."; \
+	else \
+		echo "Namespace argo does not exist. Creating..."; \
+		kubectl create namespace argo; \
+		echo "Namespace argo has been created."; \
+	fi
+	@echo "Creating argo devops-toys ssh key secret ..."
+	kubectl --namespace argocd \
+	create secret \
+		generic repo-devops-app \
+			--from-literal=url=git@github.com:$(GITHUB_ORGANIZATION)/devops-app.git \
+			--from-file=sshPrivateKey=ssh-key-devops-app \
+			--dry-run=client -oyaml | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/argo-workflows/secret-devops-toys-ssh-key.yaml > /dev/null
+
+# Create argo argo-workflows storage secret
+argo-workflows-storage-credentials:
+	@if kubectl get namespace argo >/dev/null 2>&1; then \
+		echo "Namespace argo already exists."; \
+	else \
+		echo "Namespace argo does not exist. Creating..."; \
+		kubectl create namespace argo; \
+		echo "Namespace argo has been created."; \
+	fi
+	echo "Creating argo argo-workflows storage secret ..."
+	@kubectl --namespace argo \
+		create secret \
+		generic minio-creds \
+			--from-literal=accesskey=${MINIO_USERNAME} \
+			--from-literal=secretkey=${MINIO_PASSWORD} \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/argo-workflows/secret-storage-credentials.yaml > /dev/null
+
+argo-workflows: argo-workflows-sso-credentials argo-workflows-git-credentials argo-workflows-devops-toys-ssh-key argo-workflows-storage-credentials
+
+# Create argo argo-events devops-app webhook secret
+argo-events-webhook-secret:
+	@if kubectl get namespace argo-events >/dev/null 2>&1; then \
+		echo "Namespace argo-events already exists."; \
+	else \
+		echo "Namespace argo-events does not exist. Creating..."; \
+		kubectl create namespace argo-events; \
+		echo "Namespace argo-events has been created."; \
+	fi
+	echo "Creating argo argo-events webhook secret ..."
+	@kubectl --namespace argo-events \
+		create secret generic webhook-secret-dt \
+			--from-literal=secret=$(DA_WEBHOOK_SECRET) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/argo-events/secret-webhook-da.yaml > /dev/null
+
+# Create argo argo-events github token
+argo-events-github-token:
+	@if kubectl get namespace argo-events >/dev/null 2>&1; then \
+		echo "Namespace argo-events already exists."; \
+	else \
+		echo "Namespace argo-events does not exist. Creating..."; \
+		kubectl create namespace argo-events; \
+		echo "Namespace argo-events has been created."; \
+	fi
+	echo "Creating argo argo-events github token secret ..."
+	@kubectl --namespace argo-events \
+		create secret generic gh-token-dt \
+			--from-literal=token=$(DA_GITHUB_TOKEN) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/argo-events/secret-gh-token-da.yaml > /dev/null
+
+argo-events: argo-events-webhook-secret argo-events-github-token
+
+# Create minio secret for root user
+minio-root:
+	kubectl --namespace minio \
+		create secret \
+		generic minio-root \
+			--from-literal=root-user=$(MINIO_ROOT_USER) \
+			--from-literal=root-password=$(MINIO_ROOT_PASSWORD) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/minio/secret-minio-root.yaml
+
+# Create minio users
+minio-users:
+	@./scripts/minio_users.sh "${MINIO_USERNAME}" "${MINIO_PASSWORD}"
+
+minio: minio-root minio-users
 	
 # Push Secrets
 push-secrets:
@@ -306,6 +457,9 @@ all:
 	$(MAKE) cloudflare
 	$(MAKE) external-dns
 	$(MAKE) argo-cd
+	$(MAKE) minio
+	$(MAKE) argo-events
+	$(MAKE) argo-workflows
 	$(MAKE) push-secrets
 	$(MAKE) bootstrap-app
 
