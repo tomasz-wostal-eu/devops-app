@@ -1,0 +1,23 @@
+nameOverride: "grafana"
+fullnameOverride: "grafana"
+envFromSecret: grafana-loki-tenants
+envFromSecret: grafana-google-oauth
+grafana:
+  grafana.ini:
+    users:
+      viewers_can_edit: "False"
+    server:
+      root_url: https://grafana-dev.devopslaboratory.org
+    auth.google:
+      enabled: true
+      allow_sign_up: false
+      auto_login: false
+      client_id: CLIENT-ID
+      client_secret: CLIENT-SECRET
+      scopes: openid email profile
+      auth_url: https://accounts.google.com/o/oauth2/v2/auth
+      token_url: https://oauth2.googleapis.com/token
+      api_url: https://openidconnect.googleapis.com/v1/userinfo
+      allowed_domains: devopslaboratory.org
+      hosted_domain: devopslaboratory.org.
+      use_pkce: true

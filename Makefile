@@ -339,6 +339,14 @@ argo-workflows-devops-toys-ssh-key:
 	fi
 	@echo "Creating argo devops-toys ssh key secret ..."
 	kubectl --namespace argo \
+	@if kubectl get namespace argo-events >/dev/null 2>&1; then \
+		echo "Namespace argo-events already exists."; \
+	else \
+		echo "Namespace argo-events does not exist. Creating..."; \
+		kubectl create namespace argo-events; \
+		echo "Namespace argo-events has been created."; \
+	fi
+	echo "Creating argo argo-events github token secret ..."
 	create secret \
 		generic repo-devops-app \
 			--from-literal=url=git@github.com:$(GITHUB_ORGANIZATION)/devops-app.git \
@@ -446,10 +454,55 @@ minio-users:
 		kubectl create namespace minio; \
 		echo "Namespace minio has been created."; \
 	fi
-	echo "Creating minio users ..."
+	echo "Creating secret for minio users ..."
 	@./scripts/minio_users.sh "${MINIO_USERNAME}" "${MINIO_PASSWORD}"
 
 minio: minio-root minio-users
+
+# Grafana loki tenants
+grafana-loki-tenants:
+	@if kubectl get namespace grafana >/dev/null 2>&1; then \
+		echo "Namespace grafana already exists."; \
+	else \
+		echo "Namespace grafana does not exist. Creating..."; \
+		kubectl create namespace grafana; \
+		echo "Namespace grafana has been created."; \
+	fi
+	echo "Creating secret for loki tenants in grafana ..."
+	kubectl --namespace grafana \
+		create secret \
+			generic grafana-loki-tenants \
+				--from-literal=LOKI_TENANT_1_ID=${LOKI_TENANT_DEV} \
+				--from-literal=LOKI_TENANT_2_ID=${LOKI_TENANT_PROD} \
+				--output json \
+				--dry-run=client | \
+			kubeseal --format yaml \
+				--controller-name=sealed-secrets \
+				--controller-namespace=sealed-secrets | \
+			tee ./manifests/dev/grafana/secret-grafana-loki-tenants.yaml > /dev/null
+
+# Grafana google oauth
+grafana-google-oauth:
+	@if kubectl get namespace grafana >/dev/null 2>&1; then \
+		echo "Namespace grafana already exists."; \
+	else \
+		echo "Namespace grafana does not exist. Creating..."; \
+		kubectl create namespace grafana; \
+		echo "Namespace grafana has been created."; \
+	fi
+	echo "Creating grafana oauth client secret ..."
+	@kubectl --namespace grafana \
+		create secret \
+		generic grafana-google-oauth \
+			--from-literal=client_id=$(GOOGLE_CLIENT_ID) \
+			--from-literal=client_secret=$(GOOGLE_CLIENT_SECRET) \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+			tee ./manifests/dev/grafana/secret-google-oauth.yaml > /dev/null
+grafana: grafana-loki-tenants grafana-google-oauth
 	
 # Push Secrets
 push-secrets:
