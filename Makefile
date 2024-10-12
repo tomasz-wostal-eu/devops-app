@@ -339,7 +339,6 @@ argo-workflows-devops-toys-ssh-key:
 	fi
 	@echo "Creating argo devops-toys ssh key secret ..."
 	kubectl --namespace argo \
-	echo "Creating argo argo-events github token secret ..."
 	create secret \
 		generic repo-devops-app \
 			--from-literal=url=git@github.com:$(GITHUB_ORGANIZATION)/devops-app.git \
