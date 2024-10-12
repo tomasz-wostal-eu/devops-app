@@ -486,8 +486,8 @@ grafana-google-oauth:
 	@kubectl --namespace grafana \
 		create secret \
 		generic grafana-google-oauth \
-			--from-literal=client_id=$(GOOGLE_CLIENT_ID) \
-			--from-literal=client_secret=$(GOOGLE_CLIENT_SECRET) \
+			--from-literal=GF_AUTH_GOOGLE_CLIENT_ID=$(GOOGLE_CLIENT_ID) \
+			--from-literal=GF_AUTH_GOOGLE_CLIENT_SECRET=$(GOOGLE_CLIENT_SECRET) \
 			--output json \
 			--dry-run=client | \
 		kubeseal --format yaml \
