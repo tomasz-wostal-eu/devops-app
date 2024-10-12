@@ -339,13 +339,6 @@ argo-workflows-devops-toys-ssh-key:
 	fi
 	@echo "Creating argo devops-toys ssh key secret ..."
 	kubectl --namespace argo \
-	@if kubectl get namespace argo-events >/dev/null 2>&1; then \
-		echo "Namespace argo-events already exists."; \
-	else \
-		echo "Namespace argo-events does not exist. Creating..."; \
-		kubectl create namespace argo-events; \
-		echo "Namespace argo-events has been created."; \
-	fi
 	echo "Creating argo argo-events github token secret ..."
 	create secret \
 		generic repo-devops-app \
@@ -529,6 +522,7 @@ all:
 	$(MAKE) minio
 	$(MAKE) argo-events
 	$(MAKE) argo-workflows
+	$(MAKE) grafana
 	$(MAKE) push-secrets
 	$(MAKE) bootstrap-app
 
