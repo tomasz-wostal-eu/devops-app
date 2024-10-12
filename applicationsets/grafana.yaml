@@ -19,7 +19,7 @@ spec:
     spec:
       project: monitoring
       destination:
-        namespace: external-dns
+        namespace: grafana
         server: '{{url}}'
       sources:
         - repoURL: https://grafana.github.io/helm-charts
