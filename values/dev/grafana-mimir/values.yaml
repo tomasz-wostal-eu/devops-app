@@ -1,0 +1,61 @@
+nameOverride: "grafana-mimir"
+fullnameOverride: "grafana-mimir"
+global:
+  extraEnvFrom:
+    - secretRef:
+        name: minio-creds
+metaMonitoring:
+  dashboards:
+    enabled: true
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: prometheus
+  prometheusRule:
+    enabled: true
+    labels:
+      release: prometheus
+minio:
+  enabled: false
+nginx:
+  enabled: false
+ingress:
+  enabled: false
+  ingressClassName: nginx
+  annotations: 
+    cert-manager.io/cluster-issuer: devops-local
+  hosts:
+    - mimir.devops.local
+  tls:
+    - secretName: tls-mimir.devops.local
+      hosts:
+        - mimir.devops.local
+mimir:
+  structuredConfig:
+    limits:
+      max_global_series_per_user: 2000000
+    common:
+      storage:
+        backend: s3
+        s3:
+          endpoint: minio.minio.svc.cluster.local:9000
+          secret_access_key: ${accesskey}
+          access_key_id: ${secretkey}
+          insecure: true
+    blocks_storage:
+      s3:
+        bucket_name: mimir-blocks
+    alertmanager_storage:
+      s3:
+        bucket_name: mimir-alertmanager
+    ruler_storage:
+      s3:
+        bucket_name: mimir-ruler
+syncPolicy:
+automated:
+selfHeal: true
+prune: true
+allowEmpty: false
+syncOptions:
+- CreateNamespace=true
+- ServerSideApply=false

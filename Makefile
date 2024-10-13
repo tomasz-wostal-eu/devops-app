@@ -561,6 +561,20 @@ grafana-secrets:
 			--controller-namespace=sealed-secrets | \
 		tee ./manifests/dev/grafana/secrets.yaml > /dev/null
 grafana: grafana-secrets
+
+grafana-mimir:
+	kubectl create namespace mimir
+	kubectl --namespace mimir \
+		create secret \
+		generic minio-creds \
+		--from-literal=accesskey=${MINIO_USERNAME} \
+		--from-literal=secretkey=${MINIO_PASSWORD} \
+		--output json \
+		--dry-run=client | \
+		kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/grafana-mimir/secret-storage-credentials.yaml
 	
 # Push Secrets
 push-secrets:
@@ -590,6 +604,7 @@ all:
 	$(MAKE) grafana
 	$(MAKE) grafana-loki
 	$(MAKE) grafana-promtail
+	$(MAKE) grafana-mimir
 	$(MAKE) push-secrets
 	$(MAKE) bootstrap-app
 
