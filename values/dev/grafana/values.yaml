@@ -58,4 +58,4 @@ datasources:
           #   url: '$${__value.raw}'
           #   name: TraceID
         secureJsonData: 
-          httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
+          httpHeaderValue1: dev
