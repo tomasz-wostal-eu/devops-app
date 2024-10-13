@@ -461,14 +461,14 @@ grafana-loki-gateway-credentials:
 		echo "Namespace loki has been created."; \
 	fi
 	echo "Creating secret for grafana loki gateway ..."
-	@htpasswd -b -c .htpasswd ${LOKI_USERNAME} ${LOKI_PASSWORD}
-	@kubectl -n loki create secret \
+	htpasswd -b -c .htpasswd ${LOKI_USERNAME} ${LOKI_PASSWORD}
+	kubectl -n loki create secret \
 		generic loki-gateway-auth \
 			--from-file=.htpasswd \
 			--dry-run=client -o yaml > htaccess-loki.yaml
 	kubeseal --format yaml \
 		--controller-name=sealed-secrets \
-		--controller-namespace=sealed-secrets < htaccess-loki.yaml > ./manifests/dev/grafana-loki/secret-gateway-auth.yaml > /dev/null
+		--controller-namespace=sealed-secrets < htaccess-loki.yaml > ./manifests/dev/grafana-loki/secret-gateway-auth.yaml
 
 # Create grafana loki minio credentials
 grafana-loki-minio-credentials:
