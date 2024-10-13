@@ -4,7 +4,7 @@ serviceMonitor:
   enabled: true
 extraArgs:
   - '-config.expand-env=true'
-  - '-client.external-labels=cluster={{cluster}}'
+  - '-client.external-labels=cluster=dev'
 extraEnv:
   - name: LOKI_USERNAME
     valueFrom:
