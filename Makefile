@@ -452,7 +452,7 @@ minio-users:
 minio: minio-root minio-users
 
 # Create grafana loki gateway credentials
-grafana-loki-htaccess:
+grafana-loki-gateway-credentials:
 	@if kubectl get namespace loki >/dev/null 2>&1; then \
 		echo "Namespace loki already exists."; \
 	else \
@@ -492,7 +492,7 @@ grafana-loki-minio-credentials:
 			--controller-namespace=sealed-secrets | \
 		tee ./manifests/dev/grafana-loki/secret-minio-creds.yaml > /dev/null
 
-grafana-loki: grafana-loki-htaccess grafana-loki-minio-credentials
+grafana-loki: grafana-loki-gateway-credentials grafana-loki-minio-credentials
 
 grafana-promtail:
 	@if kubectl get namespace promtail >/dev/null 2>&1; then \
