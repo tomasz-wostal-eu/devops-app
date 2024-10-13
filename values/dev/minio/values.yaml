@@ -1,7 +1,7 @@
 nameOverride: minio
 fullnameOverride: minio
 mode: standalone
-defaultBuckets: "argo-workflows, mimir-alertmanager, mimir-blocks, mimir-ruler"
+defaultBuckets: "argo-workflows, mimir-alertmanager, mimir-blocks, mimir-ruler, loki"
 persistence:
   enabled: false
 metrics:

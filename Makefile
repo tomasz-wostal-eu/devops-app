@@ -516,29 +516,29 @@ grafana-promtail:
 	tee ./manifests/dev/grafana-promtail/secret-loki-gateway.yaml
 
 # Grafana loki tenants
-grafana-loki-tenants:
-	@if kubectl get namespace grafana >/dev/null 2>&1; then \
-		echo "Namespace grafana already exists."; \
-	else \
-		echo "Namespace grafana does not exist. Creating..."; \
-		kubectl create namespace grafana; \
-		echo "Namespace grafana has been created."; \
-	fi
-	echo "Creating secret for loki tenants in grafana ..."
-	kubectl --namespace grafana \
-		create secret \
-			generic grafana-loki-tenants \
-				--from-literal=LOKI_TENANT_1_ID=${LOKI_TENANT_DEV} \
-				--from-literal=LOKI_TENANT_2_ID=${LOKI_TENANT_PROD} \
-				--output json \
-				--dry-run=client | \
-			kubeseal --format yaml \
-				--controller-name=sealed-secrets \
-				--controller-namespace=sealed-secrets | \
-			tee ./manifests/dev/grafana/secret-grafana-loki-tenants.yaml > /dev/null
+# grafana-loki-tenants:
+# 	@if kubectl get namespace grafana >/dev/null 2>&1; then \
+# 		echo "Namespace grafana already exists."; \
+# 	else \
+# 		echo "Namespace grafana does not exist. Creating..."; \
+# 		kubectl create namespace grafana; \
+# 		echo "Namespace grafana has been created."; \
+# 	fi
+# 	echo "Creating secret for loki tenants in grafana ..."
+# 	kubectl --namespace grafana \
+# 		create secret \
+# 			generic grafana-loki-tenants \
+# 				--from-literal=LOKI_TENANT_1_ID=${LOKI_TENANT_DEV} \
+# 				--from-literal=LOKI_TENANT_2_ID=${LOKI_TENANT_PROD} \
+# 				--output json \
+# 				--dry-run=client | \
+# 			kubeseal --format yaml \
+# 				--controller-name=sealed-secrets \
+# 				--controller-namespace=sealed-secrets | \
+# 			tee ./manifests/dev/grafana/secret-grafana-loki-tenants.yaml > /dev/null
 
 # Grafana google oauth
-grafana-google-oauth:
+grafana-secrets:
 	@if kubectl get namespace grafana >/dev/null 2>&1; then \
 		echo "Namespace grafana already exists."; \
 	else \
@@ -549,16 +549,18 @@ grafana-google-oauth:
 	echo "Creating grafana oauth client secret ..."
 	@kubectl --namespace grafana \
 		create secret \
-		generic grafana-google-oauth \
+		generic grafana-secrets \
 			--from-literal=GF_AUTH_GOOGLE_CLIENT_ID=$(GOOGLE_CLIENT_ID) \
 			--from-literal=GF_AUTH_GOOGLE_CLIENT_SECRET=$(GOOGLE_CLIENT_SECRET) \
+			--from-literal=LOKI_TENANT_1_ID=${LOKI_TENANT_DEV} \
+			--from-literal=LOKI_TENANT_2_ID=${LOKI_TENANT_PROD} \
 			--output json \
 			--dry-run=client | \
-		kubeseal --format yam	l \
+		kubeseal --format yaml \
 			--controller-name=sealed-secrets \
 			--controller-namespace=sealed-secrets | \
-			tee ./manifests/dev/grafana/secret-google-oauth.yaml > /dev/null
-grafana: grafana-loki-tenants grafana-google-oauth
+		tee ./manifests/dev/grafana/secrets.yaml > /dev/null
+grafana: grafana-secrets
 	
 # Push Secrets
 push-secrets:
