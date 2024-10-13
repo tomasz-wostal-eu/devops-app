@@ -35,3 +35,27 @@ ingress:
   path: /
   hosts:
     - 'grafana-dev.devopslaboratory.org'
+plugins:
+  - digrich-bubblechart-panel
+  - grafana-clock-panel
+  - grafana-piechart-panel
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Loki_Tenant_1
+      type: loki
+      uid: loki_tenant_dev
+      url: http://grafana-loki-query-frontend.loki.svc.cluster.local:3100
+      access: proxy
+      isDefault: false
+      jsonData:
+        maxLines: 1000
+        httpHeaderName1: 'X-Scope-OrgID'
+        derivedFields:
+        - datasourceUid: jaeger
+          matcherRegex: "otelTraceID\":\\s*\"([a-fA-F0-9]+)"
+          url: '$${__value.raw}'
+          name: TraceID
+      secureJsonData: 
+        httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
