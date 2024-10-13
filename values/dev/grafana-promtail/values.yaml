@@ -19,7 +19,7 @@ extraEnv:
 config:
   clients:
     - url: http://grafana-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
-      tenant_id: devops-toys
+      tenant_id: dev
       basic_auth:
         password: ${LOKI_PASSWORD}
         username: ${LOKI_USERNAME}
