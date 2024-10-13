@@ -1,0 +1,169 @@
+nameOverride: "grafana-loki"
+            fullnameOverride: "grafana-loki"
+            deploymentMode: Distributed
+            loki:
+              auth_enabled: true
+              limits_config:
+                volume_enabled: true
+                allow_structured_metadata: true
+              storage:
+                bucketNames:
+                  chunks: loki
+                  ruler: loki
+                  admin: loki
+                type: s3
+                s3:
+                  endpoint: http://minio.minio.svc.cluster.local:9000/loki
+                  insecure: true
+                  accessKeyId: ${accesskey}
+                  secretAccessKey: ${secretkey}
+                  s3ForcePathStyle: true
+              schemaConfig:
+                configs:
+                - from: "2020-12-11"
+                  index:
+                    period: 24h
+                    prefix: index_
+                  object_store: s3
+                  schema: v11
+                  store: boltdb-shipper
+                - from: "2024-06-01"
+                  index:
+                    period: 24h
+                    prefix: loki_index_
+                  object_store: s3
+                  schema: v13
+                  store: tsdb
+              pattern_ingester:
+                enabled: true
+            test:
+              enabled: false
+            lokiCanary:
+              enabled: false
+            serviceAccount:
+              name: loki
+            gateway:
+              basicAuth:
+                enabled: true
+                existingSecret: loki-gateway-auth
+              ingress:
+                enabled: false
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: devops-local
+                hosts:
+                  - host: loki.devops.local
+                    paths:
+                      - path: /
+                        pathType: ImplementationSpecific
+                tls:
+                  - secretName: loki-gateway-tls
+                    hosts:
+                      - loki.devops.local
+            write:
+              replicas: 0
+            read:
+              replicas: 0
+            backend:
+              replicas: 0
+            ingester:
+              replicas: 1
+              extraArgs:  
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: false
+                claims:
+                  - name: data
+                    size: 2Gi
+                  - name: wal
+                    size: 2Gi
+            distributor:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+            querier:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: true
+            queryFrontend:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+            queryScheduler:
+              replicas: 2
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+            indexGateway:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: true
+            compactor:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enable: true
+            bloomGateway:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: false
+            bloomCompactor:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: false
+                claims:
+                  - name: data
+                    size: 2Gi
+                  - name: wal
+                    size: 2Gi
+            patternIngester:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: true
+            ruler:
+              enabled: false
+            monitoring:
+              dashboards:
+                enabled: true
+              serviceMonitor:
+                enabled: true

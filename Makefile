@@ -451,6 +451,70 @@ minio-users:
 
 minio: minio-root minio-users
 
+# Create grafana loki gateway credentials
+grafana-loki-htaccess:
+	@if kubectl get namespace loki >/dev/null 2>&1; then \
+		echo "Namespace loki already exists."; \
+	else \
+		echo "Namespace loki does not exist. Creating..."; \
+		kubectl create namespace loki; \
+		echo "Namespace loki has been created."; \
+	fi
+	echo "Creating secret for grafana loki gateway ..."
+	@htpasswd -b -c .htpasswd ${LOKI_USERNAME} ${LOKI_PASSWORD}
+	@kubectl -n loki create secret \
+		generic loki-gateway-auth \
+			--from-file=.htpasswd \
+			--dry-run=client -o yaml > htaccess-loki.yaml
+	kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets < htaccess-loki.yaml > ./manifests/dev/grafana-loki/secret-gateway-auth.yaml > /dev/null
+
+# Create grafana loki minio credentials
+grafana-loki-minio-credentials:
+	@if kubectl get namespace loki >/dev/null 2>&1; then \
+		echo "Namespace loki already exists."; \
+	else \
+		echo "Namespace loki does not exist. Creating..."; \
+		kubectl create namespace loki; \
+		echo "Namespace loki has been created."; \
+	fi
+	echo "Creating secret for grafan loki minio credentials ..."
+	@kubectl --namespace loki \
+		create secret \
+		generic minio-creds \
+			--from-literal=accesskey=${MINIO_USERNAME} \
+			--from-literal=secretkey=${MINIO_PASSWORD} \
+			--output json \
+			--dry-run=client | \
+		kubeseal --format yaml \
+			--controller-name=sealed-secrets \
+			--controller-namespace=sealed-secrets | \
+		tee ./manifests/dev/grafana-loki/secret-minio-creds.yaml > /dev/null
+
+grafana-loki: grafana-loki-htaccess grafana-loki-minio-credentials
+
+grafana-promtail:
+	@if kubectl get namespace promtail >/dev/null 2>&1; then \
+		echo "Namespace promtail already exists."; \
+	else \
+		echo "Namespace promtail does not exist. Creating..."; \
+		kubectl create namespace promtail; \
+		echo "Namespace promtail has been created."; \
+	fi
+	echo "Creating secret for grafan loki minio credentials ..."
+	@kubectl --namespace promtail \
+		create secret \
+			generic promtail-credentials \
+				--from-literal=username=${LOKI_USERNAME} \
+				--from-literal=password=${LOKI_PASSWORD} \
+				--output json \
+				--dry-run=client | \
+	kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets | \
+	tee ./manifests/dev/grafana-promtail/secret-loki-gateway.yaml
+
 # Grafana loki tenants
 grafana-loki-tenants:
 	@if kubectl get namespace grafana >/dev/null 2>&1; then \
@@ -490,7 +554,7 @@ grafana-google-oauth:
 			--from-literal=GF_AUTH_GOOGLE_CLIENT_SECRET=$(GOOGLE_CLIENT_SECRET) \
 			--output json \
 			--dry-run=client | \
-		kubeseal --format yaml \
+		kubeseal --format yam	l \
 			--controller-name=sealed-secrets \
 			--controller-namespace=sealed-secrets | \
 			tee ./manifests/dev/grafana/secret-google-oauth.yaml > /dev/null
@@ -522,6 +586,8 @@ all:
 	$(MAKE) argo-events
 	$(MAKE) argo-workflows
 	$(MAKE) grafana
+	$(MAKE) grafana-loki
+	$(MAKE) grafana-promtail
 	$(MAKE) push-secrets
 	$(MAKE) bootstrap-app
 

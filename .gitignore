@@ -11,3 +11,5 @@ devops-toys.2024-10-04.private-key.pem
 devopslaboratory-f90072620e7c.json
 encoded.json
 encoded2.json
+.htpasswd
+htaccess-loki.yaml 
