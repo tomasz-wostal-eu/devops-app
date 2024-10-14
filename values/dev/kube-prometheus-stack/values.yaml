@@ -54,10 +54,9 @@ prometheus:
         - source_labels: [__name__]
           regex: 'container_memory_failures_total' # unneeded large metric
           action: drop
-
       - job_name: 'linkerd-controller'
         kubernetes_sd_configs:
-        - role: podj
+        - role: pod
           namespaces:
             names:
             - linkerd
@@ -70,7 +69,6 @@ prometheus:
         - source_labels: [__meta_kubernetes_pod_container_name]
           action: replace
           target_label: component
-
       - job_name: 'linkerd-service-mirror'
         kubernetes_sd_configs:
         - role: pod
@@ -83,7 +81,6 @@ prometheus:
         - source_labels: [__meta_kubernetes_pod_container_name]
           action: replace
           target_label: component
-
       - job_name: 'linkerd-proxy'
         kubernetes_sd_configs:
         - role: pod
