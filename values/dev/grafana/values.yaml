@@ -42,19 +42,390 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
-    - name: Loki_Tenant_Dev
+    - name: 'Loki DEV'
       type: loki
-      uid: loki_tenant_dev
+      uid: loki_dev
       url: http://grafana-loki-query-frontend.loki.svc.cluster.local:3100
       access: proxy
       isDefault: false
       jsonData:
         maxLines: 1000
         httpHeaderName1: 'X-Scope-OrgID'
-        # derivedFields:
-        # - datasourceUid: jaeger
-        #   matcherRegex: "otelTraceID\":\\s*\"([a-fA-F0-9]+)"
-        #   url: '$${__value.raw}'
-        #   name: TraceID
+        derivedFields:
+        - datasourceUid: jaeger
+          matcherRegex: "otelTraceID\":\\s*\"([a-fA-F0-9]+)"
+          url: '$${__value.raw}'
+          name: TraceID
       secureJsonData: 
         httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
+    - name: 'Mimir DEV'
+      type: prometheus
+      uid: mimir_dev
+      url: http://grafana-mimir-querier.mimir.svc.cluster.local:8080/prometheus
+      access: proxy
+      isDefault: true
+      jsonData:
+        httpMethod: "POST"
+        prometheusType: "Mimir"
+        tlsSkipVerify: false
+        timeout: 30
+        httpHeaderName1: 'X-Scope-OrgID'
+      secureJsonData:
+        httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
+    - name: 'Jaeger DEV'
+      type: jaeger
+      uid: jaeger
+      url: http://jaeger-query.jaeger.svc.cluster.local
+      access: proxy
+      readOnly: false
+      isDefault: false
+      jsonData:
+        tracesToLogsV2:
+          datasourceUid: 'loki_tenant_1'
+          spanStartTimeShift: '1h'
+          spanEndTimeShift: '-1h'
+          tags: ['job', 'instance', 'pod', 'namespace']
+          filterByTraceID: false
+          filterBySpanID: false
+          customQuery: true
+          query: 'method="$${__span.tags.method}"'
+        tracesToMetrics:
+          datasourceUid: 'mimir'
+          spanStartTimeShift: '1h'
+          spanEndTimeShift: '-1h'
+          tags: [{ key: 'service.name', value: 'service' }, { key: 'job' }]
+          queries:
+            - name: 'Sample query'
+              query: 'sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m]))'
+        nodeGraph:
+          enabled: true
+        traceQuery:
+          timeShiftEnabled: true
+          spanStartTimeShift: '1h'
+          spanEndTimeShift: '-1h'
+        spanBar:
+          type: 'None'
+      secureJsonData:
+        httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'cnpg'
+      orgId: 1
+      folder: 'Cloud Native PostgreSQL'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-cnpg-dashboards
+    - name: 'argo-cd'
+      orgId: 1
+      folder: 'Argo CD'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-argo-cd-dashboards
+    - name: 'argo-workflows'
+      orgId: 1
+      folder: 'Argo Workflows'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-argo-workflows-dashboards
+    - name: 'grafana-loki'
+      orgId: 1
+      folder: 'Grafana Loki'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-loki-dashboards
+    - name: 'grafana-dashboards-kubernetes'
+      orgId: 1
+      folder: 'Kubernetes'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
+    - name: 'grafana-dashboards-mimir'
+      orgId: 1
+      folder: 'Grafana Mimir'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-dashboards-mimir
+    - name: 'grafana-dashboards-nginx'
+      orgId: 1
+      folder: 'Nginx Ingress'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-dashboards-nginx
+    - name: 'grafana-dashboards-metallb'
+      orgid: 1
+      folder: 'Metallb'
+      type: file
+      disabledeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-dashboards-metallb
+    - name: 'grafana-dashboards-minio'
+      orgId: 1
+      folder: 'MinIO'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-dashboards-minio
+    - name: 'grafana-dashboards-cert-manager'
+      orgId: 1
+      folder: 'Cert Manager'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-dashboards-cert-manager
+    - name: 'grafana-dashboards-linkerd'
+      orgId: 1
+      folder: 'Linkerd'
+      type: file
+      disableDeletion: true
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/grafana-dashboards-linkerd
+dashboards:
+  grafana-dashboards-linkerd:
+    top-line:
+      gnetId: 15474
+      revision: 4
+      datasource: 'Mimir DEV'
+    health:
+      gnetId: 15486
+      revision: 3
+      datasource: 'Mimir DEV'
+    kubernetes:
+      gnetId: 15479
+      revision: 2
+      datasource: 'Mimir DEV'
+    namespace:
+      gnetId: 15478
+      revision: 3
+      datasource: 'Mimir DEV'
+    deployment:
+      gnetId: 15475
+      revision: 6
+      datasource: 'Mimir DEV'
+    pod:
+      gnetId: 15477
+      revision: 3
+      datasource: 'Mimir DEV'
+    service:
+      gnetId: 15480
+      revision: 3
+      datasource: 'Mimir DEV'
+    route:
+      gnetId: 15481
+      revision: 3
+      datasource: 'Mimir DEV'
+    authority:
+      gnetId: 15482
+      revision: 3
+      datasource: 'Mimir DEV'
+    cronjob:
+      gnetId: 15483
+      revision: 3
+      datasource: 'Mimir DEV'
+    job:
+      gnetId: 15487
+      revision: 3
+      datasource: 'Mimir DEV'
+    daemonset:
+      gnetId: 15484
+      revision: 3
+      datasource: 'Mimir DEV'
+    replicaset:
+      gnetId: 15491
+      revision: 3
+      datasource: 'Mimir DEV'
+    statefulset:
+      gnetId: 15493
+      revision: 3
+      datasource: 'Mimir DEV'
+    replicationcontroller:
+      gnetId: 15492
+      revision: 4
+      datasource: 'Mimir DEV'
+    prometheus:
+      gnetId: 15489
+      revision: 2
+      datasource: 'Mimir DEV'
+    prometheus-benchmark:
+      gnetId: 15490
+      revision: 2
+      datasource: 'Mimir DEV'
+    multicluster:
+      gnetId: 15488
+      revision: 3
+      datasource: 'Mimir DEV'
+  grafana-cnpg-dashboards:
+    cloud-native-postgresql:
+      gnetId: 20417
+      revision: 2
+      datasource: 'Mimir DEV'
+  grafana-argo-workflows-dashboards:
+    argo-workflows-metrics:
+      url: https://raw.githubusercontent.com/tomaszwostal/devops-toys/v0.2/devops-app/grafana-config/dashboards/argo-workflows-20348.json
+      token: ''
+      datasource: 'Mimir DEV'
+  grafana-argo-cd-dashboards:
+    argo-cd-application-overview:
+      gnetId: 19974
+      revision: 2
+      datasource: 'Mimir DEV'
+    argo-cd-notifications-overview:
+      gnetId: 19975
+      revision: 2
+      datasource: 'Mimir DEV'
+    argo-cd-operational-overview:
+      gnetId: 19993
+      revision: 2
+      datasource: 'Mimir DEV'
+    argo-cd:
+      gnetId: 14584
+      revision: 1
+      datasource: 'Mimir DEV'
+  grafana-dashboards-cert-manager:
+    cert-manager-overview:
+      gnetId: 20842
+      revision: 2
+      datasource: 'Mimir DEV'
+  grafana-dashboards-minio:
+    minio-dashboard:
+      gnetId: 13502
+      revision: 26
+      datasource:
+      - name: DS_PROMETHEUS
+        value: Mimir
+  grafana-dashboards-metallb:
+    metallb-overview:
+      gnetId: 14127
+      revision: 1
+      datasource: 'Mimir DEV'
+  grafana-dashboards-nginx:
+    devops-nirvana:
+      gnetId: 14314
+      revision: 2
+      datasource: 'Mimir DEV'
+    ingress-nginx-overview:
+      gnetId: 16677
+      revision: 2
+      datasource: 'Mimir DEV'
+  grafana-dashboards-mimir:
+    mimir-writes:
+      gnetId: 16026
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-reads:
+      gnetId: 16016
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-writes-networking:
+      gnetId: 16023
+      revision: 10
+      datasource: 'Mimir DEV'
+    mimir-writes-resources:
+      gnetId: 16024
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-reads-networking:
+      gnetId: 16014
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-reads-resources:
+      gnetId: 16015
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-queries:
+      gnetId: 16013
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-object-store:
+      gnetId: 16011
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-tenants:
+      gnetId: 16021
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-scaling:
+      gnetId: 16019
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-rollout-progress:
+      gnetId: 16017
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-config:
+      gnetId: 16010
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-overrides:
+      gnetId: 16012
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-alertmanager:
+      gnetId: 16007
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-compactor:
+      gnetId: 16009
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-compactor-resources:
+      gnetId: 16008
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-alertmanager-resources:
+      gnetId: 16006
+      revision: 11
+      datasource: 'Mimir DEV'
+    mimir-ruler:
+      gnetId: 16018
+      revision: 11
+      datasource: 'Mimir DEV'
+  grafana-loki:
+    container-log-tenant-1:
+      gnetId: 16966
+      revision: 1
+      datasource: Loki_Tenant_1
+  grafana-dashboards-kubernetes:
+    k8s-system-api-server:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
+      token: ''
+      datasourdce: Mimir
+    k8s-system-coredns:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
+      token: ''
+      datasourdce: Mimir
+    k8s-views-global:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
+      token: ''
+      datasourdce: Mimir
+    k8s-views-namespaces:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
+      token: ''
+      datasourdce: Mimir
+    k8s-views-nodes:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
+      token: ''
+      datasourdce: Mimir
+    k8s-views-pods:
+      url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+      token: ''
+      datasourdce: Mimir
