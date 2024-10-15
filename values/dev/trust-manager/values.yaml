@@ -1,0 +1,8 @@
+crds:
+  enabled: true
+app:
+  metrics:
+    service:
+      enabled: true
+      servicemonitor:
+        enabled: true
