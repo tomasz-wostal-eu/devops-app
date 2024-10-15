@@ -51,11 +51,3 @@ mimir:
     ruler_storage:
       s3:
         bucket_name: mimir-ruler
-syncPolicy:
-automated:
-selfHeal: true
-prune: true
-allowEmpty: false
-syncOptions:
-- CreateNamespace=true
-- ServerSideApply=false
