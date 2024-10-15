@@ -15,7 +15,7 @@ spec:
         revision: dev
   template:
     metadata:
-      name: '{{cluster}}-argo-events'
+      name: '{{cluster}}-linkerd-crds'
     spec:
       project: core
       destination:
