@@ -25,12 +25,12 @@ prometheus:
       - url: http://grafana-mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push
         headers:
           X-Scope-OrgID: dev
-    podMonitorSelector:
-      matchLabels:
-        release: monitoring
-    serviceMonitorSelector:
-      matchLabels:
-        release: monitoring
+    # podMonitorSelector:
+    #   matchLabels:
+    #     release: monitoring
+    # serviceMonitorSelector:
+    #   matchLabels:
+    #     release: monitoring
     additionalScrapeConfigs:
       - job_name: 'kubernetes-nodes-cadvisor'
         scheme: https
