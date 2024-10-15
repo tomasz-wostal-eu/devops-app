@@ -1,7 +1,7 @@
 nameOverride: prometheus
 fullnameOverride: prometheus
 crds:
-  enabled: true
+  enabled: false
 alertmanager:
   enabled: false
 grafana:
