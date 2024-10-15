@@ -1,0 +1,69 @@
+provisionDataStore:
+  cassandra: false
+  elasticsearch: true
+
+storage:
+  type: elasticsearch
+
+nameOverride: "jaeger"
+fullnameOverride: "jaeger"
+
+networkPolicy:
+  enabled: false
+
+cassandra:
+  persistence:
+    enabled: false
+
+ingester:
+  enabled: false
+  serviceMonitor:
+    enabled: true
+
+agent:
+  resources:
+  serviceMonitor:
+    enabled: true
+
+collector:
+  serviceMonitor:
+    enabled: true
+
+  service:
+    grpc:
+      port: 14250
+      name: grpc
+    http:
+      port: 14268
+      name: http
+    zipkin:
+      port: 9411
+      name: zipkin
+    otlp:
+      grpc:
+        port: 4317
+        name: otlp-grpc
+      http:
+        port: 4318
+        name: otlp-http
+
+query:
+  enabled: true
+  agentSidecar:
+    enabled: true
+  extraEnv:
+    - name: METRICS_STORAGE_TYPE
+      value: prometheus
+    - name: PROMETHEUS_SERVER_URL
+      value: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
+    - name: PROMETHEUS_QUERY_SUPPORT_SPANMETRICS_CONNECTOR
+      value: "true"
+    - name: PROMETHEUS_QUERY_NORMALIZE_CALLS
+      value: "true"
+    - name: PROMETHEUS_QUERY_NORMALIZE_DURATION
+      value: "true"
+  serviceMonitor:
+    enabled: true
+  networkPolicy:
+    enabled: false
+

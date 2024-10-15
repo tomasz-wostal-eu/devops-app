@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: argo-cd
+  name: external-dns
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "9"
@@ -15,20 +15,20 @@ spec:
         revision: dev
   template:
     metadata:
-      name: '{{cluster}}-trust-manager'
+      name: '{{cluster}}-jaeger'
     spec:
-      project: cicd
+      project: core
       destination:
-        namespace: trust-manager
+        namespace: jaeger
         server: '{{url}}'
       sources:
-        - repoURL: https://charts.jetstack.io
-          chart: trust-manager
-          targetRevision: v0.*.*
+        - repoURL: https://jaegertracing.github.io/helm-charts
+          targetRevision: 0.*.*
+          chart: jaeger
           helm:
-            releaseName: trust-manager
+            releaseName: jaeger
             valueFiles:
-              - $values/values/{{cluster}}/trust-manager/values.yaml
+              - $values/values/{{cluster}}/jaeger/values.yaml
         - repoURL: git@github.com:devops-toys/devops-app.git
           targetRevision: '{{revision}}'
           ref: values
