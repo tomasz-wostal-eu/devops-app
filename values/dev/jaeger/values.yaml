@@ -10,25 +10,20 @@ fullnameOverride: "jaeger"
 
 networkPolicy:
   enabled: false
-
 cassandra:
   persistence:
     enabled: false
-
 ingester:
   enabled: false
   serviceMonitor:
     enabled: true
-
 agent:
   resources:
   serviceMonitor:
     enabled: true
-
 collector:
   serviceMonitor:
     enabled: true
-
   service:
     grpc:
       port: 14250
@@ -46,7 +41,6 @@ collector:
       http:
         port: 4318
         name: otlp-http
-
 query:
   enabled: true
   agentSidecar:
@@ -64,6 +58,4 @@ query:
       value: "true"
   serviceMonitor:
     enabled: true
-  networkPolicy:
-    enabled: false
 
