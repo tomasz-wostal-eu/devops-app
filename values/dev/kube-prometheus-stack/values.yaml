@@ -3,7 +3,7 @@ fullnameOverride: prometheus
 crds:
   enabled: false
 alertmanager:
-  enabled: false
+  enabled: true
 grafana:
   enabled: false
 prometheusOperator:
