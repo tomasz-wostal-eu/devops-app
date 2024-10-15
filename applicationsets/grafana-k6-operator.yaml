@@ -27,11 +27,11 @@ spec:
           chart: k6-operator
           helm:
             releaseName: grafana-k6-operator
-            valueFiles:
-              - $values/values/{{cluster}}/grafana-k6-operator/values.yaml
-        - repoURL: git@github.com:devops-toys/devops-app.git
-          targetRevision: '{{revision}}'
-          ref: values
+            # valueFiles:
+            #   - $values/values/{{cluster}}/grafana-k6-operator/values.yaml
+        # - repoURL: git@github.com:devops-toys/devops-app.git
+        #   targetRevision: '{{revision}}'
+        #   ref: values
       syncPolicy:
         automated:
           selfHeal: true
