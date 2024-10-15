@@ -15,10 +15,10 @@ prometheus:
       - remote-write-receiver
       - otlp-write-receiver
       - exemplar-storage
-    podMonitorSelectorNilUsesHelmValues: nil
-    ruleSelectorNilUsesHelmValues: nil
-    serviceMonitorSelectorNilUsesHelmValues: nil
-    probeSelectorNilUsesHelmValues: nil
+    podMonitorSelectorNilUsesHelmValues: true
+    ruleSelectorNilUsesHelmValues: true
+    serviceMonitorSelectorNilUsesHelmValues: true
+    probeSelectorNilUsesHelmValues: true
     remoteWrite:
       - url: http://grafana-mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push
         headers:
