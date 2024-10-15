@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: linkerd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "9"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: dev
+        url: https://kubernetes.default.svc
+        revision: dev
+  template:
+    metadata:
+      name: '{{cluster}}-linkerd'
+    spec:
+      project: core
+      destination:
+        namespace: linkerd
+        server: '{{url}}'
+      sources:
+        - repoURL: https://helm.linkerd.io/stable
+          chart: linkerd
+          targetRevision: 1.*.*
+          helm:
+            releaseName: linkerd
+            valueFiles:
+              - $values/values/{{cluster}}/linkerd/values.yaml
+        - repoURL: git@github.com:devops-toys/devops-app.git
+          targetRevision: '{{revision}}'
+          ref: values
+        - repoURL: git@github.com:devops-toys/devops-app.git
+          path: manifests/{{cluster}}/linkerd
+          targetRevision: '{{revision}}'
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - FailOnSharedResource=true
+          - RespectIgnoreDifferences=true
+
