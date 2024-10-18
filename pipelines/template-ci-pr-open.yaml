@@ -54,7 +54,6 @@ spec:
             templateRef:
               name: git-checkout-pr
               template: git-checkout-pr
-
     - name: exit-handler
       steps:
         - - name: notify-success
