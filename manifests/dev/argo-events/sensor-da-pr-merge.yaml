@@ -8,7 +8,7 @@ spec:
     serviceAccountName: operate-workflow-sa
   dependencies:
     - name: github-pull-request
-      eventSourceName: dt
+      eventSourceName: da
       eventName: pull_request
       filters:
         data:
