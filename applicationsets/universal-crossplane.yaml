@@ -23,6 +23,7 @@ spec:
         server: '{{url}}'
       sources:
         - repoURL: https://bitnami-labs.github.io/sealed-secrets
+          path: ''
           chart: universal-crossplane
           targetRevision: '*-0'
           helm:
