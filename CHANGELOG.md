@@ -1,3 +1,10 @@
+# [0.2.0-alpha.4](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.3...v0.2.0-alpha.4) (2024-10-20)
+
+
+### Features
+
+* DT-26: deploy universal-crossplane #comment deployed ([#6](https://github.com/devops-toys/devops-app/issues/6)) ([e0238ad](https://github.com/devops-toys/devops-app/commit/e0238ad8d620961eb0d49a51ac708ec89b8f3ab0))
+
 # [0.2.0-alpha.3](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.2...v0.2.0-alpha.3) (2024-10-19)
 
 
