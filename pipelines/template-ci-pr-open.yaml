@@ -1,0 +1,126 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: ci-devops-app
+spec:
+  serviceAccountName: workflow
+  onExit: exit-handler
+  podGC:
+    strategy: OnWorkflowCompletion
+    deleteDelayDuration: 5m
+  metrics:
+    prometheus:
+      # Writes a prometheus metric stating the length of time it took the workflow to complete. Grouped by workflow status and 'type'.
+      - name: exec_duration_gauge
+        labels:
+          - key: name
+            value: "ci-devops-app"
+          - key: type
+            value: "pull-request"
+          - key: status
+            value: "{{status}}"
+        help: "Duration gauge by name"
+        gauge:
+          value: "{{workflow.duration}}"
+          realtime: false
+      # If the workflow fails, we increase the Prometheus failure counter by 1.
+      - name: result_counter
+        help: "Count of step execution by result status"
+        labels:
+          - key: status
+            value: Failed
+          - key: name
+            value: "ci-devops-app"
+          - key: type
+            value: "pull-request"
+        when: "{{status}} == Failed"
+        counter:
+          value: "1"
+      # If the workflow succeeds, we increase the Prometheus succeeded counter by 1.
+      - name: result_counter
+        help: "Count of step execution by result status"
+        labels:
+          - key: status
+            value: Succeeded
+          - key: name
+            value: "ci-devops-app"
+          - key: type
+            value: "pull-request"
+        when: "{{status}} == Succeeded"
+        counter:
+          value: "1"
+  volumes:
+    - name: git-credentials
+      secret:
+        secretName: git-credentials
+  entrypoint: main
+  parameters:
+    - name: pr_number
+      value: '1'
+    - name: pr_title
+      value: 'title'
+    - name: pr_url
+      value: 'url'
+    - name: pr_user
+      value: 'user'
+    - name: sha 
+      value: 'sha'
+    - name: short_sha
+      value: 'short_sha'
+    - name: branch
+      value: 'branch'
+    - name: target_branch 
+      value: 'target_branch'
+    - name: app_repo
+      value: 'repo'
+    - name: organization
+      value: 'organization'
+    - name: github_user_email
+      value: 'tomasz@wostal.eu'
+    - name: github_user_name
+      value: 'tomasz@wostal.eu'
+  templates:
+    - name: main
+      dag:
+        tasks:
+          - name: notify-start
+            templateRef:
+              name: notify
+              template: main
+            arguments:
+              parameters:
+                - name: state
+                  value: pending
+          - name: git-checkout-pr
+            templateRef:
+              name: git-checkout-pr
+              template: git-checkout-pr
+    - name: exit-handler
+      steps:
+        - - name: notify-success
+            templateRef:
+              name: notify
+              template: main
+            arguments:
+              parameters:
+                - name: state
+                  value: success
+            when: "{{workflow.status}} == Succeeded"
+        - - name: notify-failure
+            templateRef:
+              name: notify
+              template: main
+            arguments:
+              parameters:
+                - name: state
+                  value: failure
+            when: "{{workflow.status}} == Failed"
+        - - name: notify-error
+            templateRef:
+              name: notify
+              template: main
+            arguments:
+              parameters:
+                - name: state
+                  value: error
+            when: "{{workflow.status}} == Error"

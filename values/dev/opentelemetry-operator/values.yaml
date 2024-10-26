@@ -1,0 +1,20 @@
+nameOverride: "opentelemetry-operator"
+fullnameOverride: "opentelemetry-operator"
+admissionWebhooks:
+  certManager:
+    enabled: true
+  autoGenerateCert:
+    enabled: false
+manager:
+  featureGates: "operator.golang.flags"
+  collectorImage:
+    repository: otel/opentelemetry-collector-k8s
+  serviceMonitor:
+    enabled: true
+    metricsEndpoints:
+      - port: metrics
+  prometheusRule:
+    enabled: true
+    groups: []
+    defaultRules:
+      enabled: true

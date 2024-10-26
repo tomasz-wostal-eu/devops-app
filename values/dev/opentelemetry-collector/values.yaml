@@ -1,0 +1,68 @@
+nameOverride: "opentelemetry-collector"
+fullnameOverride: "opentelemetry-collector"
+mode: deployment
+image:
+  repository: otel/opentelemetry-collector-k8s
+
+config:
+  exporters:
+    debug:
+      verbosity: detailed
+    otlp:
+      endpoint: jaeger-collector.jaeger.svc.cluster.local:4317
+      tls:
+        insecure: true
+    # otlphttp:
+    #   endpoint: http://jaeger-collector.jaeger.svc.cluster.local:4318
+    #   tls:
+    #     insecure: true
+  service:
+    telemetry:
+      metrics:
+        address: ${env:MY_POD_IP}:8888
+    extensions:
+      - health_check
+    pipelines:
+      logs:
+        exporters:
+          - debug
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+      metrics:
+        exporters:
+          - debug
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+          - prometheus
+      traces:
+        exporters:
+          - otlp
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+          - jaeger
+          - zipkin
+# command:
+#   name: otelcol-k8s
+# presets:
+#   logsCollection:
+#     enabled: true
+#     includeCollectorLogs: true
+#   hostMetrics:
+#     enabled: true
+#   kubernetesAttributes:
+#     enabled: true
+#     extractAllPodLabels: true
+#     extractAllPodAnnotations: true
+#   kubernetesEvents:
+#     enabled: true
+#   clusterMetrics:
+          #     enabled: true

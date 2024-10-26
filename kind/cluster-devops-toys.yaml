@@ -1,0 +1,24 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: devops-toys
+featureGates:
+  APIServerTracing: true
+nodes:
+  - role: control-plane
+    labels:
+      env: dev
+  - role: worker
+    labels:
+      env: dev
+  - role: worker
+    labels:
+      env: dev
+  - role: worker
+    labels:
+      env: dev
+  - role: worker
+    labels:
+      env: dev
+  - role: worker
+    labels:
+      env: dev

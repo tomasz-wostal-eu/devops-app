@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: linkerd-crds
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "8"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: dev
+        url: https://kubernetes.default.svc
+        revision: v0.2.0-alpha.6
+  template:
+    metadata:
+      name: '{{cluster}}-linkerd-crds'
+    spec:
+      project: core
+      destination:
+        namespace: linkerd
+        server: '{{url}}'
+      sources:
+        - repoURL: https://helm.linkerd.io/stable
+          chart: linkerd-crds
+          targetRevision: 1.*.*
+          helm:
+            releaseName: linkerd-crds
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - FailOnSharedResource=true
+          - RespectIgnoreDifferences=true
+

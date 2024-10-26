@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: opentelemetry-collector
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "9"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: dev
+        url: https://kubernetes.default.svc
+        revision: v0.2.0-alpha.6
+  template:
+    metadata:
+      name: '{{cluster}}-opentelemetry-collector'
+    spec:
+      project: core
+      destination:
+        namespace: opentelemetry-operator-system
+        server: '{{url}}'
+      sources:
+        - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+          chart: opentelemetry-collector
+          targetRevision: 0.*.*
+          helm:
+            releaseName: opentelemetry-collector
+            valueFiles:
+              - $values/values/{{cluster}}/opentelemetry-collector/values.yaml
+        - repoURL: git@github.com:devops-toys/devops-app.git
+          targetRevision: '{{revision}}'
+          ref: values
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - FailOnSharedResource=true
+          - RespectIgnoreDifferences=true
+
+
+
+
+

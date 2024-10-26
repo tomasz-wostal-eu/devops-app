@@ -1,0 +1,14 @@
+prometheusUrl: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
+jaegerUrl: http://jaeger-query.jaeger.svc.cluster.local
+# dashboard:
+#   enforcedHostRegexp: linkerd-viz.devops.local
+grafana:
+  externalUrl: https://grafana-dev.devopslaboratory.org
+tap:
+  externalSecret: true
+  injectCaFrom: linkerd-viz/tap
+tapInjector:
+  externalSecret: true
+  injectCaFrom: linkerd-viz/linkerd-tap-injector
+prometheus:
+  enabled: false

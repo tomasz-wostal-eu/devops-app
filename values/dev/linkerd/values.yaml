@@ -1,0 +1,15 @@
+cniEnabled: false
+enableEndpointSlices: false
+identity:
+  externalCA: true
+  issuer:
+    scheme: kubernetes.io/tls
+policyValidator:
+  externalSecret: true
+  injectCaFrom: linkerd/linkerd-policy-validator
+proxyInjector:
+  externalSecret: true
+  injectCaFrom: linkerd/linkerd-proxy-injector
+profileValidator:
+  externalSecret: true
+  injectCaFrom: linkerd/linkerd-sp-validator

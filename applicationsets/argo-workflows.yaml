@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-workflows
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: dev
+        url: https://kubernetes.default.svc
+        revision: v0.2.0-alpha.6
+  template:
+    metadata:
+      name: '{{cluster}}-argo-workflows'
+    spec:
+      project: cicd
+      destination:
+        namespace: argo
+        server: '{{url}}'
+      sources:
+        - repoURL: https://argoproj.github.io/argo-helm
+          chart: argo-workflows
+          targetRevision: 0.*.*
+          helm:
+            releaseName: argo-workflows
+            valueFiles:
+              - $values/values/{{cluster}}/argo-workflows/values.yaml
+        - repoURL: git@github.com:devops-toys/devops-app.git
+          targetRevision: '{{revision}}'
+          ref: values
+        - repoURL: git@github.com:devops-toys/devops-app.git
+          path: manifests/{{cluster}}/argo-workflows
+          targetRevision: '{{revision}}'
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - FailOnSharedResource=true
+          - RespectIgnoreDifferences=true
+          - PruneLast=true

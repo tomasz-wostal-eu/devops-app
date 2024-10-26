@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana-k6-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "8"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: dev
+        url: https://kubernetes.default.svc
+        revision: v0.2.0-alpha.6
+  template:
+    metadata:
+      name: '{{cluster}}-grafana-k6-operator'
+    spec:
+      project: monitoring
+      destination:
+        namespace: grafana-k6-operator
+        server: '{{url}}'
+      sources:
+        - repoURL: https://grafana.github.io/helm-charts
+          targetRevision: 3.*.*
+          chart: k6-operator
+          helm:
+            releaseName: grafana-k6-operator
+            # valueFiles:
+            #   - $values/values/{{cluster}}/grafana-k6-operator/values.yaml
+        # - repoURL: git@github.com:devops-toys/devops-app.git
+        #   targetRevision: '{{revision}}'
+        #   ref: values
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - FailOnSharedResource=true
+          - RespectIgnoreDifferences=true
+          - PruneLast=true
+
+
