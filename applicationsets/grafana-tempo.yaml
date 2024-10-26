@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana-tempo
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "9"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: dev
+        url: https://kubernetes.default.svc
+        revision: dev
+  template:
+    metadata:
+      name: '{{cluster}}-grafana-tempo'
+    spec:
+      project: monitoring
+      destination:
+        namespace: tempo
+        server: '{{url}}'
+      sources:
+        - repoURL: https://grafana.github.io/helm-charts
+          targetRevision: 3.*.*
+          chart: tempo-distributed
+          helm:
+            releaseName: grafana-tempo
+            valueFiles:
+              - $values/values/{{cluster}}/grafana-tempo/values.yaml
+        - repoURL: git@github.com:devops-toys/devops-app.git
+          targetRevision: '{{revision}}'
+          ref: values
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - FailOnSharedResource=true
+          - RespectIgnoreDifferences=true
+          - PruneLast=true
+
