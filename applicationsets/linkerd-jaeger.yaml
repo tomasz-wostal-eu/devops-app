@@ -23,7 +23,7 @@ spec:
         server: '{{url}}'
       sources:
         - repoURL: https://helm.linkerd.io/stable
-          chart: linkerd
+          chart: linkerd-jaeger
           targetRevision: 30.*.*
           helm:
             releaseName: linkerd-jaeger
