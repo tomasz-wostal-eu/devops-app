@@ -1,0 +1,6 @@
+global:
+  extraEnv: []
+
+fullnameOverride: grafana-tempo
+
+
