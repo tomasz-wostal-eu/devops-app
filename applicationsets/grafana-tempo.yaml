@@ -23,7 +23,7 @@ spec:
         server: '{{url}}'
       sources:
         - repoURL: https://grafana.github.io/helm-charts
-          targetRevision: 3.*.*
+          targetRevision: 1.*.*
           chart: tempo-distributed
           helm:
             releaseName: grafana-tempo
