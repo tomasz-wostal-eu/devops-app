@@ -1,3 +1,10 @@
+# [0.2.0-alpha.10](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.9...v0.2.0-alpha.10) (2024-10-27)
+
+
+### Features
+
+* fix jaeger ([#15](https://github.com/devops-toys/devops-app/issues/15)) ([696d61a](https://github.com/devops-toys/devops-app/commit/696d61a56dba455b47cdd21258ea9cb2f9195fdf))
+
 # [0.2.0-alpha.9](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.8...v0.2.0-alpha.9) (2024-10-27)
 
 
