@@ -1,3 +1,10 @@
+# [0.2.0-alpha.8](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.7...v0.2.0-alpha.8) (2024-10-27)
+
+
+### Bug Fixes
+
+* DT-28: Deploy Grafana tempo #comment deployed ([#13](https://github.com/devops-toys/devops-app/issues/13)) ([7e11308](https://github.com/devops-toys/devops-app/commit/7e11308a376a07a0ddb72bb8750878b5620f9c5f))
+
 # [0.2.0-alpha.7](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.6...v0.2.0-alpha.7) (2024-10-27)
 
 
