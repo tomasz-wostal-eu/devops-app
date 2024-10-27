@@ -13,3 +13,10 @@ proxyInjector:
 profileValidator:
   externalSecret: true
   injectCaFrom: linkerd/linkerd-sp-validator
+collector:
+  enabled: false
+jaeger:
+  enabled: false
+webhook:
+  collectorSvcAddr: grafna-tempo-distributor.tempo.svc.cluster.local:55678
+  collectorSvcAccount: grafana-tempo

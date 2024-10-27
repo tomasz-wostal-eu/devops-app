@@ -28,7 +28,7 @@ spec:
           helm:
             releaseName: linkerd
             valueFiles:
-              - $values/values/{{cluster}}/linkerd/values.yaml
+              - $values/values/{{cluster}}/linkerd-control-plane/values.yaml
         - repoURL: git@github.com:devops-toys/devops-app.git
           targetRevision: '{{revision}}'
           ref: values

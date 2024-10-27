@@ -2,6 +2,11 @@ nameOverride: "grafana"
 fullnameOverride: "grafana"
 envFromSecret: grafana-secrets
 grafana.ini:
+  tracing:
+    type: jaeger
+  tracing.jaeger:
+    address: grafana-tempo-distributor.tempo.svc.cluster.local:6831
+    zipkin_propagation: true
   users:
     viewers_can_edit: "False"
   server:

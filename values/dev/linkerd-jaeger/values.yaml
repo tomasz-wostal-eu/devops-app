@@ -1,0 +1,5 @@
+controller:
+  config:
+    enable-opentracing: "true"
+    zipkin-collector-host: grafana-tempo-distributor.tempo.svc.cluster.local
+    zipkin-service-name: nginx-internal
