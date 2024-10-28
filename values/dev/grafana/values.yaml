@@ -47,6 +47,12 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
+    - name: 'Tempo DEV'
+      type: tempo
+      uid: tempo_dev
+      url: http://grafana-tempo-query-frontend.tempo.svc.cluster.local:3100
+      access: proxy
+      isDefault: false
     - name: 'Loki DEV'
       type: loki
       uid: loki_dev
@@ -57,8 +63,8 @@ datasources:
         maxLines: 1000
         httpHeaderName1: 'X-Scope-OrgID'
         derivedFields:
-        - datasourceUid: jaeger
-          matcherRegex: "otelTraceID\":\\s*\"([a-fA-F0-9]+)"
+        - datasourceUid: tempo_dev
+          matcherRegex: '.+trace_id":"(.+)","span_id.+'
           url: '$${__value.raw}'
           name: TraceID
       secureJsonData: 
@@ -69,7 +75,7 @@ datasources:
       url: http://grafana-mimir-querier.mimir.svc.cluster.local:8080/prometheus
       access: proxy
       isDefault: true
-      jsonData:
+      JsonData:
         httpMethod: "POST"
         prometheusType: "Mimir"
         tlsSkipVerify: false
