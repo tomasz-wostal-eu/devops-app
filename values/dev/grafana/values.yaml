@@ -53,6 +53,13 @@ datasources:
       url: http://grafana-tempo-query-frontend.tempo.svc.cluster.local:3100
       access: proxy
       isDefault: false
+      jsonData:
+        tracesToLogs:
+          datasourceUid: loki_dev
+          filterByTraceID: true
+          filterBySpanID: true
+        tracesToMetrics:
+          datasourceUid: mimir_dev
     - name: 'Loki DEV'
       type: loki
       uid: loki_dev
