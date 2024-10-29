@@ -1,3 +1,10 @@
+# [0.2.0-alpha.15](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.14...v0.2.0-alpha.15) (2024-10-29)
+
+
+### Features
+
+* update grafana tempo datasource ([#21](https://github.com/devops-toys/devops-app/issues/21)) ([693e033](https://github.com/devops-toys/devops-app/commit/693e0331eca37d231574d1588ede7d180a39d482))
+
 # [0.2.0-alpha.14](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.13...v0.2.0-alpha.14) (2024-10-28)
 
 
