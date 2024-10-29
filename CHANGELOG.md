@@ -1,3 +1,10 @@
+# [0.2.0-alpha.17](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.16...v0.2.0-alpha.17) (2024-10-29)
+
+
+### Features
+
+* deploy grafana pyroscope ([#23](https://github.com/devops-toys/devops-app/issues/23)) ([fddb720](https://github.com/devops-toys/devops-app/commit/fddb720d2f3d6a31205f32a89a713231c6c48f26))
+
 # [0.2.0-alpha.16](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.15...v0.2.0-alpha.16) (2024-10-29)
 
 
