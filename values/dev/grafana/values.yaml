@@ -82,7 +82,7 @@ datasources:
       url: http://grafana-mimir-querier.mimir.svc.cluster.local:8080/prometheus
       access: proxy
       isDefault: true
-      JsonData:
+      jsonData:
         httpMethod: "POST"
         prometheusType: "Mimir"
         tlsSkipVerify: false
