@@ -28,3 +28,9 @@ tempo:
         cluster_label_verification_disabled: false
 metricsGenerator:
   enabled: true
+  config:
+    local_blocks:
+      filter_server_spans: false
+    storage:
+      remote_write:
+        - url: "http://prometheus-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"

@@ -63,6 +63,15 @@ datasources:
         tracesToProfiles:
           datasourceUid: pyroscope_dev
           profileTypeId: "process_cpu:cpu:nanoseconds:cpu:nanoseconds"
+        nodeGraph:
+          enabled: true
+        serviceMap:
+          datasourceUid: mimir_dev
+        lokiSearch:
+          datasourceUid: loki_dev
+        search:
+          hide: false
+          filters: [{id: "service-name", scope: "resource", tag: "service.name", operator: "="}]
     - name: 'Loki DEV'
       type: loki
       uid: loki_dev
