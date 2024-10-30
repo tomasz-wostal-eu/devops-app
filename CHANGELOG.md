@@ -1,3 +1,10 @@
+# [0.2.0-alpha.22](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.21...v0.2.0-alpha.22) (2024-10-30)
+
+
+### Features
+
+* configure tempo ([#28](https://github.com/devops-toys/devops-app/issues/28)) ([4ef07f4](https://github.com/devops-toys/devops-app/commit/4ef07f4c06f8e6b834a1e254bdd78edaa809f82b))
+
 # [0.2.0-alpha.21](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.20...v0.2.0-alpha.21) (2024-10-30)
 
 
