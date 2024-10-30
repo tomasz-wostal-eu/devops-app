@@ -26,3 +26,5 @@ tempo:
       memberlist:
         cluster_label: grafana-tempo
         cluster_label_verification_disabled: false
+metricsGenerator:
+  enabled: true
