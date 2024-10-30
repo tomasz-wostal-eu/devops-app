@@ -21,3 +21,8 @@ traces:
       enabled: true
   opencensus:
     enabled: true
+tempo:
+  structuredConfig:
+      memberlist:
+        cluster_label: grafana-tempo
+        cluster_label_verification_disabled: false
