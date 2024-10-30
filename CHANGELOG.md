@@ -1,3 +1,10 @@
+# [0.2.0-alpha.21](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.20...v0.2.0-alpha.21) (2024-10-30)
+
+
+### Features
+
+* add pyroscope ([#27](https://github.com/devops-toys/devops-app/issues/27)) ([345bcc1](https://github.com/devops-toys/devops-app/commit/345bcc174c62ada4b269a69ea65e3728c4daeba4))
+
 # [0.2.0-alpha.20](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.19...v0.2.0-alpha.20) (2024-10-30)
 
 
