@@ -1,3 +1,10 @@
+# [0.2.0-alpha.19](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.18...v0.2.0-alpha.19) (2024-10-30)
+
+
+### Features
+
+* remove jaeger datasource ([#25](https://github.com/devops-toys/devops-app/issues/25)) ([475843e](https://github.com/devops-toys/devops-app/commit/475843eb77604cc896dd27248c4544eb029a0dd3))
+
 # [0.2.0-alpha.18](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.17...v0.2.0-alpha.18) (2024-10-30)
 
 
