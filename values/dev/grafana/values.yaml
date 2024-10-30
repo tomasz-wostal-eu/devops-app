@@ -90,41 +90,6 @@ datasources:
         httpHeaderName1: 'X-Scope-OrgID'
       secureJsonData:
         httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
-    - name: 'Jaeger DEV'
-      type: jaeger
-      uid: jaeger
-      url: http://jaeger-query.jaeger.svc.cluster.local
-      access: proxy
-      readOnly: false
-      isDefault: false
-      jsonData:
-        tracesToLogsV2:
-          datasourceUid: 'loki_tenant_1'
-          spanStartTimeShift: '1h'
-          spanEndTimeShift: '-1h'
-          tags: ['job', 'instance', 'pod', 'namespace']
-          filterByTraceID: false
-          filterBySpanID: false
-          customQuery: true
-          query: 'method="$${__span.tags.method}"'
-        tracesToMetrics:
-          datasourceUid: 'mimir'
-          spanStartTimeShift: '1h'
-          spanEndTimeShift: '-1h'
-          tags: [{ key: 'service.name', value: 'service' }, { key: 'job' }]
-          queries:
-            - name: 'Sample query'
-              query: 'sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m]))'
-        nodeGraph:
-          enabled: true
-        traceQuery:
-          timeShiftEnabled: true
-          spanStartTimeShift: '1h'
-          spanEndTimeShift: '-1h'
-        spanBar:
-          type: 'None'
-      secureJsonData:
-        httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
 dashboardProviders:
   dashboardproviders.yaml:
     apiVersion: 1
