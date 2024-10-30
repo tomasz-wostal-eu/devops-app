@@ -32,5 +32,6 @@ metricsGenerator:
     local_blocks:
       filter_server_spans: false
     storage:
+      wal:
       remote_write:
         - url: "http://prometheus-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
