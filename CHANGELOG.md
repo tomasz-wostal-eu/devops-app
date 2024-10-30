@@ -1,3 +1,10 @@
+# [0.2.0-alpha.20](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.19...v0.2.0-alpha.20) (2024-10-30)
+
+
+### Features
+
+* configure tempo ring ([#26](https://github.com/devops-toys/devops-app/issues/26)) ([6779792](https://github.com/devops-toys/devops-app/commit/6779792b249653d5898ffca590647464cec8f1d9))
+
 # [0.2.0-alpha.19](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.18...v0.2.0-alpha.19) (2024-10-30)
 
 
