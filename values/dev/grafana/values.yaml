@@ -60,6 +60,9 @@ datasources:
           filterBySpanID: true
         tracesToMetrics:
           datasourceUid: mimir_dev
+        tracesToProfiles:
+          datasourceUid: pyroscope_dev
+          profileTypeId: "process_cpu:cpu:nanoseconds:cpu:nanoseconds"
     - name: 'Loki DEV'
       type: loki
       uid: loki_dev
@@ -71,7 +74,7 @@ datasources:
         httpHeaderName1: 'X-Scope-OrgID'
         derivedFields:
         - datasourceUid: tempo_dev
-          matcherRegex: '.+trace_id":"(.+)","span_id.+'
+          matcherRegex: '.+traceID":"(.+)","spanID.+'
           url: '$${__value.raw}'
           name: TraceID
       secureJsonData: 
@@ -90,6 +93,12 @@ datasources:
         httpHeaderName1: 'X-Scope-OrgID'
       secureJsonData:
         httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
+    - name: 'Pyroscope DEV'
+      type: grafana-pyroscope-datasource
+      uid: pyroscope_dev
+      url: http://grafana-pyroscope.pyroscope.svc.cluster.local:4040
+      access: proxy
+      isDefault: false
 dashboardProviders:
   dashboardproviders.yaml:
     apiVersion: 1
