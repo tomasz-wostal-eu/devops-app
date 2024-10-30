@@ -1,3 +1,10 @@
+# [0.2.0-alpha.18](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.17...v0.2.0-alpha.18) (2024-10-30)
+
+
+### Features
+
+* idk ([#24](https://github.com/devops-toys/devops-app/issues/24)) ([0946bd3](https://github.com/devops-toys/devops-app/commit/0946bd35a90b86bae34bd3f363a681c01ffd4fa7))
+
 # [0.2.0-alpha.17](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.16...v0.2.0-alpha.17) (2024-10-29)
 
 
