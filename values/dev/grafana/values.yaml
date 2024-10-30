@@ -73,10 +73,14 @@ datasources:
         maxLines: 1000
         httpHeaderName1: 'X-Scope-OrgID'
         derivedFields:
-        - datasourceUid: tempo_dev
-          matcherRegex: '.+traceID":"(.+)","spanID.+'
-          url: '$${__value.raw}'
-          name: TraceID
+            - name: 'TraceID'
+              matcherRegex: "traceID=(\\w+)"
+              url: "$${__value.raw}"
+              datasourceUid: tempo_dev
+            - name: 'SpanID'
+              matcherRegex: "spanID=(\\w+)"
+              url: "$${__value.raw}"
+              datasourceUid: tempo_dev
       secureJsonData: 
         httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
     - name: 'Mimir DEV'
