@@ -1,3 +1,10 @@
+# [0.2.0-alpha.25](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.24...v0.2.0-alpha.25) (2024-10-30)
+
+
+### Features
+
+* add metrics generator ([#31](https://github.com/devops-toys/devops-app/issues/31)) ([02b82f7](https://github.com/devops-toys/devops-app/commit/02b82f7ede2c4b95b988abe294610245b32cb82e))
+
 # [0.2.0-alpha.24](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.23...v0.2.0-alpha.24) (2024-10-30)
 
 
