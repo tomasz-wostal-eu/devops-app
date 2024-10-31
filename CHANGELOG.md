@@ -1,3 +1,10 @@
+# [0.2.0-alpha.30](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.29...v0.2.0-alpha.30) (2024-10-31)
+
+
+### Features
+
+* configure service graphs ([#36](https://github.com/devops-toys/devops-app/issues/36)) ([e66fb55](https://github.com/devops-toys/devops-app/commit/e66fb5537e9ac0a2f6ab118b8959ea1e06b132ad))
+
 # [0.2.0-alpha.29](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.28...v0.2.0-alpha.29) (2024-10-31)
 
 
