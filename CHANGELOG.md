@@ -1,3 +1,10 @@
+# [0.2.0-alpha.26](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.25...v0.2.0-alpha.26) (2024-10-31)
+
+
+### Features
+
+* latest stable grafana ([#32](https://github.com/devops-toys/devops-app/issues/32)) ([9c7f747](https://github.com/devops-toys/devops-app/commit/9c7f7479d30732a9e6573a40d53612ecec4669a0))
+
 # [0.2.0-alpha.25](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.24...v0.2.0-alpha.25) (2024-10-30)
 
 
