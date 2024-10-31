@@ -1,3 +1,10 @@
+# [0.2.0-alpha.27](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.26...v0.2.0-alpha.27) (2024-10-31)
+
+
+### Features
+
+* configure tempo remote write ([#33](https://github.com/devops-toys/devops-app/issues/33)) ([82735f2](https://github.com/devops-toys/devops-app/commit/82735f2050ed2c1dda91f9352702fa8ba6b6911d))
+
 # [0.2.0-alpha.26](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.25...v0.2.0-alpha.26) (2024-10-31)
 
 
