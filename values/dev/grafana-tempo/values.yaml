@@ -42,3 +42,6 @@ metricsGenerator:
       remote_write:
         - url: "http://prometheus-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
           send_exemplars: true
+global_overrides:
+  metrics_generator_processors:
+    - service-graphs
