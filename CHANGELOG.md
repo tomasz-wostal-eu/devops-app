@@ -1,3 +1,10 @@
+# [0.2.0-alpha.29](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.28...v0.2.0-alpha.29) (2024-10-31)
+
+
+### Features
+
+* configure prometheus remote write ([#35](https://github.com/devops-toys/devops-app/issues/35)) ([3a83238](https://github.com/devops-toys/devops-app/commit/3a832384df0f2d3ff2e52e46f47c4b11114a1a8b))
+
 # [0.2.0-alpha.28](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.27...v0.2.0-alpha.28) (2024-10-31)
 
 
