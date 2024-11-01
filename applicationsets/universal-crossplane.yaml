@@ -22,7 +22,7 @@ spec:
         namespace: crossplane-system
         server: '{{url}}'
       sources:
-        - repoURL: https://bitnami-labs.github.io/sealed-secrets
+        - repoURL: https://charts.upbound.io/stable
           path: ''
           chart: universal-crossplane
           targetRevision: '*-0'
