@@ -28,11 +28,11 @@ spec:
           targetRevision: '*-0'
           helm:
             releaseName: universal-crossplane
-            valueFiles:
-              - $values/values/{{cluster}}/universal-crossplane/values.yaml
-        - repoURL: git@github.com:devops-toys/devops-app.git
-          targetRevision: '{{revision}}'
-          ref: values
+        #     valueFiles:
+        #       - $values/values/{{cluster}}/universal-crossplane/values.yaml
+        # - repoURL: git@github.com:devops-toys/devops-app.git
+        #   targetRevision: '{{revision}}'
+        #   ref: values
         - repoURL: git@github.com:devops-toys/devops-app.git
           path: manifests/{{cluster}}/universal-crossplane
           targetRevision: '{{revision}}'
