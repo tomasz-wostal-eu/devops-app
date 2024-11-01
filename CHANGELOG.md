@@ -1,3 +1,10 @@
+# [0.2.0-alpha.34](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.33...v0.2.0-alpha.34) (2024-11-01)
+
+
+### Features
+
+* deploy crossplane azure providers ([#40](https://github.com/devops-toys/devops-app/issues/40)) ([0fcb9fa](https://github.com/devops-toys/devops-app/commit/0fcb9fa8aa261958815812fa78807bf6e2e4782a))
+
 # [0.2.0-alpha.33](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.32...v0.2.0-alpha.33) (2024-11-01)
 
 
