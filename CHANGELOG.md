@@ -1,3 +1,10 @@
+# [0.2.0-alpha.35](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.34...v0.2.0-alpha.35) (2024-11-01)
+
+
+### Features
+
+* delete azuread provider ([#41](https://github.com/devops-toys/devops-app/issues/41)) ([513432e](https://github.com/devops-toys/devops-app/commit/513432e7925ff8364576f9f9a45ccba33c8ea650))
+
 # [0.2.0-alpha.34](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.33...v0.2.0-alpha.34) (2024-11-01)
 
 
