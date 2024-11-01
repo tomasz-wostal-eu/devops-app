@@ -13,3 +13,4 @@ encoded.json
 encoded2.json
 .htpasswd
 htaccess-loki.yaml 
+azure-credentials.json
