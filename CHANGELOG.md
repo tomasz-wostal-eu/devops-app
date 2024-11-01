@@ -1,3 +1,10 @@
+# [0.2.0-alpha.33](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.32...v0.2.0-alpha.33) (2024-11-01)
+
+
+### Features
+
+* deploy universal crossplane ([#39](https://github.com/devops-toys/devops-app/issues/39)) ([3db9595](https://github.com/devops-toys/devops-app/commit/3db95959eac29495fc5bc9352fce4de00bc6876f))
+
 # [0.2.0-alpha.32](https://github.com/devops-toys/devops-app/compare/v0.2.0-alpha.31...v0.2.0-alpha.32) (2024-11-01)
 
 
