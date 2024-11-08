@@ -1,0 +1,30 @@
+apiVersion: azure.upbound.io/v1beta1
+kind: ResourceGroup
+metadata:
+  name: rg-dt-dev-pc-001
+  annotations:
+    crossplane.io/external-name: "rg-dt-dev-pc-001"
+  labels:
+    environment: "devops-toys-dev"
+spec:
+  deletionPolicy: "Orphan"
+  forProvider:
+    location: Poland Central
+    tags:
+      environment: "devops-toys-dev"
+      managedBy: "crossplane"
+  providerConfigRef:
+    name: azure
+  publishConnectionDetailsTo:
+    configRef:
+      name: azure
+      policy:
+        resolution: Required
+        resolve: Always
+    name: rg-dt-dev-pc-001
+    metadata:
+      labels:
+        environment: "devops-toys-dev"
+  writeConnectionSecretToRef:
+    name: rg-dt-dev-pc-001
+    namespace: upbound-system

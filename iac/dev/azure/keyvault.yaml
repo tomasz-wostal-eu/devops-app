@@ -1,0 +1,30 @@
+apiVersion: keyvault.azure.upbound.io/v1beta1
+kind: Vault
+metadata:
+  annotations:
+    crossplane.io/external-name: "kv-dt-dev-pc-001"
+  labels:
+    environment: "devops-toys-dev"
+  name: kv-dt-dev-pc-001
+spec:
+  deletionPolicy: Orphan
+  forProvider:
+    location: Poland Central
+    resourceGroupName: rg-dt-dev-pc-001
+    skuName: standard
+    tenantId: 4acbfc87-edea-43c9-b12d-4add93825435
+    tags:
+      environment: "devops-toys-dev"
+      managedBy: "crossplane"
+  providerConfigRef:
+    name: azure
+  publishConnectionDetailsTo:
+    configRef:
+      name: azure
+      policy:
+        resolution: Required
+        resolve: Always
+    name: kv-dt-dev-pc-001
+  writeConnectionSecretToRef:
+    name: kv-dt-dev-pc-001
+    namespace: upbound-system
