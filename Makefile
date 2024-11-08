@@ -46,8 +46,8 @@ add-devops-app-repo:
 			-p '{"spec": {"template": {"metadata": {"labels": {"argocd.argoproj.io/secret-type":"repository"}}}}}' \
 			--dry-run=client \
 			--type=merge \
-			--local -oyaml > ./manifests/dev/argo-cd/secret-repo-devops-app.yaml
-	@kubectl apply -f ./manifests/dev/argo-cd/secret-repo-devops-app.yaml
+			--local -oyaml > ./manifests/prod/argo-cd/secret-repo-devops-app.yaml
+	@kubectl apply -f ./manifests/prod/argo-cd/secret-repo-devops-app.yaml
 
 # Install Prometheus Operator CRDs
 prometheus-operarator-cdrs:
