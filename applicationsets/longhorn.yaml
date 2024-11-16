@@ -29,8 +29,8 @@ spec:
           targetRevision: 1.*.*
           helm:
             releaseName: longhorn
-            # valueFiles:
-            #   - $values/values/{{cluster}}/longhorn/values.yaml
+            valueFiles:
+              - $values/values/{{cluster}}/longhorn/values.yaml
         - repoURL: '{{repository}}'
           targetRevision: '{{revision}}'
           ref: values
