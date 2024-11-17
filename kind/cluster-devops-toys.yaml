@@ -5,20 +5,38 @@ featureGates:
   APIServerTracing: true
 nodes:
   - role: control-plane
+    extraMounts:
+    - hostPath: /private/volumes
+      containerPath: /volumes
     labels:
       env: dev
   - role: worker
+    extraMounts:
+    - hostPath: /private/volumes
+      containerPath: /volumes
     labels:
       env: dev
   - role: worker
+    extraMounts:
+    - hostPath: /private/volumes
+      containerPath: /volumes
     labels:
       env: dev
   - role: worker
+    extraMounts:
+    - hostPath: /private/volumes
+      containerPath: /volumes
     labels:
       env: dev
   - role: worker
+    extraMounts:
+    - hostPath: /private/volumes
+      containerPath: /volumes
     labels:
       env: dev
   - role: worker
+    extraMounts:
+    - hostPath: /private/volumes
+      containerPath: /volumes
     labels:
       env: dev
