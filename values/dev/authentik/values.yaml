@@ -31,4 +31,4 @@ global:
       valueFrom:
         secretKeyRef:
           name: redis-password
-          key: redis_password
+          key: redis-password
