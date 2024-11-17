@@ -1,0 +1,34 @@
+nameOverride: authentik
+fullnameOverride: authentik
+
+global:
+  nameOverride: authentik
+  fullnameOverride: authentik
+  env:
+    - name: AUTHENTIK_POSTGRESQL__HOST
+      valueFrom:
+        secretKeyRef:
+          name: postgresql-authentik-app
+          key: host
+    - name: AUTHENTIK_POSTGRESQL__NAME
+      valueFrom:
+        secretKeyRef:
+          name: postgresql-authentik-app
+          key: dbname
+    - name: AUTHENTIK_POSTGRESQL__USER
+      valueFrom:
+        secretKeyRef:
+          name: postgresql-authentik-app
+          key: user
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: postgresql-authentik-app
+          key: password
+    - name: AUTHENTIK_REDIS__HOST
+      value: redis-master.redis.svc.cluster.local
+    - name: AUTHENTIK_REDIS__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: redis-password
+          key: redis_password

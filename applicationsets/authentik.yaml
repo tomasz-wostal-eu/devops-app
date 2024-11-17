@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: authentik
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: dev
+        url: https://kubernetes.default.svc
+        repository: https://github.com/tomasz-wostal-eu/devops-app.git
+        revision: dev
+  template:
+    metadata:
+      name: '{{cluster}}-authentik'
+    spec:
+      project: core
+      destination:
+        namespace: authentik
+        server: '{{url}}'
+      sources:
+        - repoURL: https://charts.goauthentik.io
+          targetRevision: 2024.10.*
+          chart: authentik
+          helm:
+            releaseName: authentik
+            valueFiles:
+              - $values/values/{{cluster}}/authentik/values.yaml
+        - repoURL: '{{repository}}'
+          targetRevision: '{{revision}}'
+          ref: values
+        - repoURL: '{{repository}}'
+          path: manifests/{{cluster}}/authentik
+          targetRevision: '{{revision}}'
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - FailOnSharedResource=true
+          - RespectIgnoreDifferences=true
+          - PruneLast=true
+
+

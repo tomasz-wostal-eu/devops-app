@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgresql-authentik
+  namespace: authentik
+spec:
+  startDelay: 300
+  stopDelay: 300
+  primaryUpdateStrategy: unsupervised
+  instances: 3
+
+  bootstrap:
+    initdb:
+      database: authentik
+      owner: authentik
+
+  storage:
+    storageClass: standard
+    size: 1Gi
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: false
+
+  enableSuperuserAccess: true
