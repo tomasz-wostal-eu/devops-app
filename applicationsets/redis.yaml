@@ -34,9 +34,9 @@ spec:
         - repoURL: '{{repository}}'
           targetRevision: '{{revision}}'
           ref: values
-        # - repoURL: '{{repository}}'
-        #   path: manifests/{{cluster}}/redis
-        #   targetRevision: '{{revision}}'
+        - repoURL: '{{repository}}'
+          path: manifests/{{cluster}}/redis
+          targetRevision: '{{revision}}'
       syncPolicy:
         automated:
           selfHeal: true
