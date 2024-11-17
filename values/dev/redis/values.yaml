@@ -1,2 +1,6 @@
 nameOverride: redis
 fullnameOverride: redis
+
+master:
+  persistence:
+    enabled: false
