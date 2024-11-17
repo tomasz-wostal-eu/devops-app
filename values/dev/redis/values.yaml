@@ -1,10 +1,14 @@
 nameOverride: redis
 fullnameOverride: redis
 
+global:
+  storageClass: standard
+  defaultStorageClass: standard
+
 master:
   persistence:
-    enabled: false
+    enabled: true
 
 replica:
   persistence:
-    enabled: false
+    enabled: true
