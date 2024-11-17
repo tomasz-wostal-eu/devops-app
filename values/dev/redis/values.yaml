@@ -5,6 +5,11 @@ global:
   storageClass: standard
   defaultStorageClass: standard
 
+auth:
+  enabled: true
+  existingSecret: redis-password
+  existingSecretPasswordKey: redis_password
+
 master:
   persistence:
     enabled: true
